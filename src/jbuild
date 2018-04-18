@@ -1,0 +1,10 @@
+(jbuild_version 1)
+
+(executable
+ ((name main)
+  (libraries (js_of_ocaml js_of_ocaml.weak elpi))
+  (js_of_ocaml ())))
+
+(alias
+ ((name DEFAULT)
+  (deps (main.bc.js))))

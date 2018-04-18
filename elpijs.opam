@@ -1,0 +1,19 @@
+opam-version: "1.2.2"
+name: "elpi-js"
+version: "0.1"
+maintainer: "Ulysse <thevoodoos@gmail.com>"
+author: "Ulysse <thevoodoos@gmail.com>"
+homepage: ""
+bug-reports: "https://github.com/voodoos/elpijs/issues"
+license: "MIT"
+dev-repo: "https://github.com/voodoos/elpijs"
+          
+build: [["jbuilder" "build" "-p" name "-j" jobs]]
+
+
+depends: [
+  "jbuilder" {build}
+  "js_of_ocaml-compiler" {build & >= "3.0" & < "4.0"}
+  "js_of_ocaml-ppx" {build & >= "3.0" & < "4.0"}
+  "js_of_ocaml" {>= "3.0" & < "4.0"}
+]

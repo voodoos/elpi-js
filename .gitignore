@@ -1,0 +1,7 @@
+# Emacs
+*~
+
+# jBuilder
+_build/
+*.install
+.merlin
