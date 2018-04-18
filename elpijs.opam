@@ -4,9 +4,9 @@ version: "0.1"
 maintainer: "Ulysse <thevoodoos@gmail.com>"
 author: "Ulysse <thevoodoos@gmail.com>"
 homepage: ""
-bug-reports: "https://github.com/voodoos/elpijs/issues"
+bug-reports: "https://github.com/voodoos/elpi-js/issues"
 license: "MIT"
-dev-repo: "https://github.com/voodoos/elpijs"
+dev-repo: "https://github.com/voodoos/elpi-js"
           
 build: [["jbuilder" "build" "-p" name "-j" jobs]]
 
