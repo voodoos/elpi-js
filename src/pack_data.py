@@ -12,7 +12,7 @@ directory = os.fsencode("data/")
 first = True
 
 
-pathlist = Path("").glob('**/*.*')
+pathlist = Path("data/").glob('**/*.*')
 for path in pathlist:
     # because path is object not string
     filename = str(path)
@@ -20,7 +20,6 @@ for path in pathlist:
     output += "{ name = \""
     output += filename
     output += "\"; text = \""
-        print (filename)
     with open(bytes(path), 'r') as content_file:
         content = os.fsdecode(content_file.read())
     output += (base64.b64encode(content.encode())).decode()

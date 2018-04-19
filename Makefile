@@ -1,5 +1,8 @@
-all:
+all: pack
 	@jbuilder build @install @DEFAULT
+
+pack:
+	cd src && python pack_data.py > data.ml
 
 dev:
 	@jbuilder build @install @DEFAULT --dev
@@ -18,7 +21,7 @@ uninstall:
 bench:
 	@jbuilder build bench/bench.exe
 
-.PHONY: clean all dev bench test check install uninstall
+.PHONY: clean pack all dev bench test check install uninstall
 
 clean:
 	jbuilder clean

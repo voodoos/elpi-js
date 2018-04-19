@@ -5,3 +5,6 @@
 _build/
 *.install
 .merlin
+
+# Macos
+.DS_Store
