@@ -2,8 +2,6 @@
   * It compiles to main.bc.js which is run in
   * a web worker via the elpi-worker.js file *)
 
-open ElpiWorkerBindings
-
 (** Elpi workflow functions *)
 
 (** Javascript API *)
@@ -16,12 +14,18 @@ open ElpiWorkerBindings
 let () =   
   (** Loading data folder in the pseudo-filesystem 
     * Elpi needs some files to startup, they are packed in data.ml *)
-  log "Populating pseudo-file-system...";
+  Log.debug "Populating pseudo-file-system...";
   Data.load ();
 
+
+  (* Configuring Elpi outputs *)
+  Elpi_API.Setup.set_warn (Log.warning ~prefix:"Elpi");
+  Elpi_API.Setup.set_error (Log.error ~prefix:"Elpi");
+  Elpi_API.Setup.set_anomaly (Log.warning ~prefix:"Elpi");
+  Elpi_API.Setup.set_type_error (Log.error ~prefix:"Elpi");
   
-  log "Starting Elpi...";
-  (*ignore (Elpi_API.Setup.init ~silent:true [] "");*)
-  log "Elpi started."
+  Log.info "Starting Elpi...";
+  ignore (Elpi_API.Setup.init ~lp_syntax:"data/lp-syntax.elpi" ~silent:false [] "");
+  Log.info "Elpi started."
 
   

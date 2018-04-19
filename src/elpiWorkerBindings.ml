@@ -7,5 +7,11 @@ let escape s =
 let unescape s =
   Js.Unsafe.fun_call (Js.Unsafe.js_expr "unescape") [|Js.Unsafe.inject s|]
 
-let log s : unit =
-  Js.Unsafe.fun_call (Js.Unsafe.js_expr "log") [|Js.Unsafe.inject (unescape (Js.string s))|]
+(* TODO : really safe ? really needed ? *)
+let safeStr s = unescape (escape s)
+
+let log lvl prefix s : unit =
+  Js.Unsafe.fun_call (Js.Unsafe.js_expr "log") 
+  [|Js.Unsafe.inject  (Js.string lvl); 
+    Js.Unsafe.inject (safeStr prefix); 
+    Js.Unsafe.inject (safeStr s)|]

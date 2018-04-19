@@ -1,4 +1,4 @@
 
-function log(s) {
-    console.log(s);
+function log(lvl, prefix, s) {
+    console.log(lvl, prefix, s);
 }
