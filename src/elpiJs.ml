@@ -71,7 +71,7 @@ let () =
     ignore(Elpi_API.Setup.init ~silent:false [] "");
     Log.info "Elpi started."
   with e -> 
-      (* TODO : Elpi raise various exceptions on file not found for exemple, 
+      (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
           but we can't catch them without a catch all clause... *)
       Log.error (Printexc.to_string e); 
       raise Elpi_error
