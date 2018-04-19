@@ -16,14 +16,32 @@ let load files =
   try Query.load filenames
   with e -> Log.error (Printexc.to_string e); raise Elpi_error
 
-let queryOnce q =
+let queryOnce q = 
   try 
     let sol : Elpi_API.Data.solution = Query.query_once q in
-    let args = StringTools.string_list_of_args sol.arg_names in
-    let assignments = StringTools.string_list_of_assignements sol.assignments in
+    let args, assignments = StringTools.list_of_sol sol in
     WorkerBindings.answer args assignments
   with Query.No_program -> Log.error "No program to query."
 
+let query q = 
+  let loop_answer f (out : Elpi_API.Execute.outcome) =
+    (* print_string ("\nIter "^ (string_of_float f) ^ ":\n");*)
+    match out with
+    | Success(sol) -> 
+      let args, assignments = StringTools.list_of_sol sol in
+      WorkerBindings.answer args assignments
+    | NoMoreSteps -> ()
+    | Failure -> raise Query.Query_failed
+  in
+  try 
+    Query.query_loop q (fun () -> true
+    (* TODO : not satifying, we want to ask user !
+     * But complcated, three options :
+     *  - Lwt ? (subtil, best)
+     *  - Elpi hack (easy, costly) (running loop twice for second result etc..)
+     *  - A different Elpy query function : start, next, end *)
+    ) (loop_answer)
+  with Query.No_program -> Log.error "No program to query."
 
 
 (** Javascript API *)
@@ -41,7 +59,9 @@ let () =
   Js.export "elpiCompile" (fun jstrarr -> 
     load (jsPairStringArrayToML jstrarr));
   Js.export "elpiQueryOnce"  (fun jstr -> 
-    queryOnce (Js.to_string jstr))
+    queryOnce (Js.to_string jstr));
+  Js.export "elpiQuery"  (fun jstr -> 
+      query (Js.to_string jstr))
   (* Js.export "run" run *)
 
 

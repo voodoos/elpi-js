@@ -26,10 +26,22 @@ let prepare_query prog query =
 let query_once q =
   let prog = get_prog () in
   let compiled_query = prepare_query prog q in
-
+  
   (* TODO ElpiTODO : static check *)
 
   match (Elpi_API.Execute.once prog compiled_query) with
     Success(data) -> data
     | Failure -> raise Query_failed
     | NoMoreSteps -> raise Query_failed
+
+
+let query_loop q more each =
+  let prog = get_prog () in
+  let query = prepare_query prog q in
+  
+  (* TODO ElpiTODO : static check *)
+
+  Elpi_API.Execute.loop prog query
+                        more
+                        each
+  

@@ -14,7 +14,6 @@ let string_list_of_args sm =
   let list = Elpi_API.Data.StrMap.bindings sm in
   List.map (fun (l, _) -> l) list
 
-
 let string_list_of_assignements ass =
   let arr = Array.map 
     (fun term ->
@@ -56,4 +55,9 @@ let string_of_sol (s : Elpi_API.Data.solution) =
   ; (string_of_cconstraints (s.custom_constraints))
   ; "\n"
   ]
+
+let list_of_sol (sol : Elpi_API.Data.solution) =
+  let args = string_list_of_args sol.arg_names in
+  let assignments = string_list_of_assignements sol.assignments in
+  args, assignments
   

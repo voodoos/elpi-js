@@ -23,3 +23,6 @@ let answer ans ass : unit =
   Js.Unsafe.fun_call (Js.Unsafe.js_expr "answer") 
   [|Js.Unsafe.inject  (toJSStringArray ans);
     Js.Unsafe.inject  (toJSStringArray ass)|]
+
+let more () : bool =
+  Js.Unsafe.fun_call (Js.Unsafe.js_expr "askMore") [||]

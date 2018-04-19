@@ -4,3 +4,5 @@
   val log : string -> string -> string -> unit
 
   val answer : string list -> string list -> unit
+
+  val more : unit -> bool
