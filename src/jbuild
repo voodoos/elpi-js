@@ -2,13 +2,25 @@
 
 (executable
  ((name elpiJs)
-  (libraries (js_of_ocaml js_of_ocaml.weak elpi base64))
-  (js_of_ocaml ()))) ;(flags (:standard --file "files"))
+  (libraries (js_of_ocaml js_of_ocaml.weak elpi base64)) ;js_of_ocaml-lwt lwt.ppx
+  (js_of_ocaml ())
+  ;(preprocess (pps (lwt.ppx)))
+ )
+) 
+  ; Would be nice to have data packed by the js_of_ocaml
+  ; compiler, but :
+  ;(flags (:standard --file ${path: data/pervasives.elpi}))
+  ; Error: Sys_error("/Users/***/tmp/js_of_elpi/_build/default/src/data/pervasives.elpi}: No such file or directory")
 
 (copy_files data/*)
+
+
 
 (alias
  ((name DEFAULT)
   ; Would be nice to have data packing at compile time...
   ;(action (with-stdout-to "data.ml" (run python pack_data.py)))
-  (deps (elpiJs.bc.js)))) ;(glob_files data/*)
+  (deps ((glob_files data/*) elpiJs.bc.js))
+  ; (glob_files data/*)
+ )
+)

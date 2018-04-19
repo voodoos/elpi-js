@@ -10,15 +10,31 @@ function answer(args, assignements) {
     postMessage(message);
 }
 
+function askMore() {
+
+    return false;
+}
+
 /** The following function deals with  
  * messages received from the parent thread. */
 onmessage = function(event) {
     switch (event.data.type) {
+
         case "compile":
             elpiCompile(event.data.code);
             break;
+
         case "queryOnce":
             elpiQueryOnce(event.data.code);
             break;
+        
+        case "query":
+            elpiQuery(event.data.code);
+            break;
+
+
+        case "more":
+            elpiQuery(event.data.code);
+        break;
     }
 }
