@@ -28,8 +28,8 @@ let query_once q =
   let compiled_query = prepare_query prog q in
 
   (* TODO ElpiTODO : static check *)
-  
+
   match (Elpi_API.Execute.once prog compiled_query) with
-    Success(data) -> StringTools.string_of_sol data
+    Success(data) -> data
     | Failure -> raise Query_failed
     | NoMoreSteps -> raise Query_failed

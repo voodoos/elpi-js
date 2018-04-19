@@ -9,6 +9,22 @@
  *}
  *
  *)
+
+let string_list_of_args sm =
+  let list = Elpi_API.Data.StrMap.bindings sm in
+  List.map (fun (l, _) -> l) list
+
+
+let string_list_of_assignements ass =
+  let arr = Array.map 
+    (fun term ->
+    Elpi_API.Pp.term (Format.str_formatter) term;
+    let str = Format.flush_str_formatter () in
+    str)
+    ass
+  in
+  Array.to_list arr
+
  let string_of_arg_names sm =
   Elpi_API.Data.StrMap.fold
     (fun k v acc -> ("("^k^": "^(string_of_int v)^")") ^ acc)
@@ -30,6 +46,7 @@ let string_of_constraints cons =
 let string_of_cconstraints cons =
   Elpi_API.Pp.custom_constraints (Format.str_formatter) cons;
   Format.flush_str_formatter ()
+
 let string_of_sol (s : Elpi_API.Data.solution) =
   String.concat "" [
   "Arg names : "; (string_of_arg_names (s.arg_names))

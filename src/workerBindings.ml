@@ -16,6 +16,10 @@ let log lvl prefix s : unit =
     Js.Unsafe.inject (safeStr prefix); 
     Js.Unsafe.inject (safeStr s)|]
 
-let answer ans : unit =
+let toJSStringArray l = 
+ Js.array (Array.of_list (List.map (Js.string) l))
+
+let answer ans ass : unit =
   Js.Unsafe.fun_call (Js.Unsafe.js_expr "answer") 
-  [|Js.Unsafe.inject  (Js.string ans)|]
+  [|Js.Unsafe.inject  (toJSStringArray ans);
+    Js.Unsafe.inject  (toJSStringArray ass)|]

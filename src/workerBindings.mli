@@ -3,4 +3,4 @@
   
   val log : string -> string -> string -> unit
 
-  val answer : string -> unit
+  val answer : string list -> string list -> unit

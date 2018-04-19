@@ -17,7 +17,11 @@ let load files =
   with e -> Log.error (Printexc.to_string e); raise Elpi_error
 
 let queryOnce q =
-  try WorkerBindings.answer (Query.query_once q)
+  try 
+    let sol : Elpi_API.Data.solution = Query.query_once q in
+    let args = StringTools.string_list_of_args sol.arg_names in
+    let assignments = StringTools.string_list_of_assignements sol.assignments in
+    WorkerBindings.answer args assignments
   with Query.No_program -> Log.error "No program to query."
 
 
@@ -69,6 +73,7 @@ let () =
   
   try 
     ignore(Elpi_API.Setup.init ~silent:false [] "");
+    (* TODO ElpiTODO : when not silent Elpi prints info on stderr not stdout *)
     Log.info "Elpi started."
   with e -> 
       (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 

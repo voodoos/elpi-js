@@ -5,8 +5,8 @@ function log(lvl, prefix, text) {
     postMessage(message);
 }
 
-function answer(text) {
-    let message = { type: "answer", text};
+function answer(args, assignements) {
+    let message = { type: "answer", args, assignements};
     postMessage(message);
 }
 
