@@ -1,4 +1,4 @@
-# Emacs
+# emacs
 *~
 
 # jBuilder
@@ -6,5 +6,8 @@ _build/
 *.install
 .merlin
 
-# Macos
+# macos
 .DS_Store
+
+# vscode
+.vscode/settings.json
