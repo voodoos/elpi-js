@@ -1,0 +1,1 @@
+../../src/js/elpi-worker.js
