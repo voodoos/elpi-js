@@ -2,9 +2,13 @@
 
 (executable
  ((name main)
-  (libraries (js_of_ocaml js_of_ocaml.weak elpi))
-  (js_of_ocaml ())))
+  (libraries (js_of_ocaml js_of_ocaml.weak elpi base64))
+  (js_of_ocaml ()))) ;(flags (:standard --file "files"))
+
+(copy_files data/*)
 
 (alias
  ((name DEFAULT)
-  (deps (main.bc.js))))
+  ; Would be nice to have data packing at compile time...
+  ;(action (with-stdout-to "data.ml" (run python pack_data.py)))
+  (deps (main.bc.js)))) ;(glob_files data/*)
