@@ -1,0 +1,10 @@
+{
+  "name": "epli-js",
+  "version": "dev",
+  "main": "lib/main.js",
+  "description": "A javascript toolset for the Elpi lambda-prolog interpreter.",
+  "repository": "git@github.com:voodoos/elpi-js.git",
+  "author": "VooDooS <thevoodoos@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
