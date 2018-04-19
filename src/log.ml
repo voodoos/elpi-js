@@ -14,7 +14,7 @@ let string_of_level = function
 
 let log ?lvl:(lvl=Info) ?prefix:(prefix="") text =
   if(not (lvl = Debug) || debugging) then
-   ElpiWorkerBindings.log (string_of_level lvl) prefix text
+   WorkerBindings.log (string_of_level lvl) prefix text
    (*if prefix = "" then text else String.concat "" ["["; prefix; "] "; text]*)
 
 let debug ?prefix:(prefix="") text = 

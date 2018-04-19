@@ -2,3 +2,5 @@
   * javascript functions defined in elpi-worker.js *)
   
   val log : string -> string -> string -> unit
+
+  val answer : string -> unit

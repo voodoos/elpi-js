@@ -14,8 +14,9 @@ first = True
 
 pathlist = Path("data/").glob('**/*.*')
 for path in pathlist:
-    # because path is object not string
-    filename = str(path)
+    # because path is object not string we use str
+    # path.relative_to(*path.parts[:1]) removes the data/ part
+    filename = str(path.relative_to(*path.parts[:1]))
     if not first: output += "; "
     output += "{ name = \""
     output += filename

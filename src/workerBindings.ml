@@ -15,3 +15,7 @@ let log lvl prefix s : unit =
   [|Js.Unsafe.inject  (Js.string lvl); 
     Js.Unsafe.inject (safeStr prefix); 
     Js.Unsafe.inject (safeStr s)|]
+
+let answer ans : unit =
+  Js.Unsafe.fun_call (Js.Unsafe.js_expr "answer") 
+  [|Js.Unsafe.inject  (Js.string ans)|]
