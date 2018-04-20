@@ -1,5 +1,5 @@
 {
-  "name": "epli-js",
+  "name": "elpi-js",
   "version": "0.1.0",
   "main": "lib/main.js",
   "description": "A javascript toolset for the Elpi lambda-prolog interpreter.",
