@@ -1,4 +1,4 @@
-importScripts('elpiJs.bc.js');
+importScripts('elpi.js');
 
 function log(lvl, prefix, text) {
     let message = { type: "log", lvl: lvl, prefix, text };

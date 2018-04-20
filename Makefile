@@ -4,6 +4,9 @@ all: pack
 pack:
 	cd src && python pack_data.py > data.ml
 
+lib: all
+	cp _build/default/src/elpiJs.bc.js lib/elpi.js && cp src/js/* lib/
+
 dev:
 	@jbuilder build @install @DEFAULT --dev
 
