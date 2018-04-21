@@ -8,6 +8,6 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "prepublish": "make"
+    "prepublish": "make lib"
   }
 }

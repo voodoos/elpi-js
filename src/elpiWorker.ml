@@ -7,10 +7,9 @@ exception Elpi_error
 (* The onmessage function is critical for a web worker *)
 let onMessage e = 
   let jsPairStringArrayToML jpsa =
-    Array.map (fun arr -> 
-      let arr = Js.to_array arr in
-      let n = arr.(0) and c = arr.(1) in
-      Log.debug (Js.to_string n); Log.debug (Js.to_string c);
+    Array.map (fun obj -> 
+      (*let arr = Js.to_array arr in*)
+      let n = obj##.name and c = obj##.content in
      (Js.to_string n), (Js.to_string c)) (Js.to_array jpsa) 
   in
   let action = Js.to_string e##.type_ in

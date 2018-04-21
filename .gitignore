@@ -11,3 +11,7 @@ _build/
 
 # vscode
 .vscode/settings.json
+
+# yarn
+node_modules
+yarn.lock

@@ -9,8 +9,8 @@
   }
   
   const elp = new Elpi(log, answer);
+
+  elp.compile([{ name: "toto.elpi", 
+                content: "world \"hello\". world \"pussycat\"."}]);
   
-  elp.compile([["toto.elpi", 
-                "hello \"world\". hello \"pussycat\"."]]);
-  
- elp.queryAll("hello A.");
+ elp.queryAll("world A.");

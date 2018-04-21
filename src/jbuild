@@ -17,7 +17,7 @@
  (
   (name elpiWorker)
   (libraries (js_of_ocaml js_of_ocaml.ppx js_of_ocaml.weak elpi base64)) ;js_of_ocaml-lwt lwt.ppx
-  (js_of_ocaml ((flags (:standard +dynlink.js +toplevel.js --opt 3))))
+  (js_of_ocaml ((flags (:standard +dynlink.js +toplevel.js))))
   (preprocess (pps (js_of_ocaml.ppx)))
  )
 ) 
