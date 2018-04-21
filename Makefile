@@ -26,7 +26,10 @@ uninstall:
 bench:
 	@jbuilder build bench/bench.exe
 
-.PHONY: clean pack all dev bench test check install uninstall
+doc:
+	documentation build -f md src/js/elpi-api.js > doc.md
+
+.PHONY: clean pack doc all dev bench test check install uninstall
 
 clean:
 	jbuilder clean

@@ -6,9 +6,46 @@
  *
  */
 
-/* Binding the onMessage function to the worker */
-
+/**
+ *  The main class, handling the lifecycle of
+ * the Elpi Worker. 
+ * 
+ * */
 class Elpi {
+  /** 
+    * @callback loggerCB
+    * @param {string} lvl 
+    *   The log level (Info, Warning or Error).
+    * @param {string} prefix
+    *   The prefix, "who" sent the message.
+    * @param {string} text
+    *   The text of the message
+    */
+
+
+  /** 
+    * @callback answerCB
+    * @param {array(string)} args 
+    *   The args of the answer
+    * @param {array(string)} assignements
+    *   The assignements of the args
+    *  of the answer
+    */
+
+  /**
+   * Creates a worker.
+   * 
+   * @param {loggerCB}
+   *  The callback used when the Worker asks for logging
+   * @param {answerCB} 
+   *  The callback used when the Worker gives an answer
+   * @param {string} path = ""
+   *   The path of the directory containing 
+   *  the elpi-worker.js file. Must be "" or 
+   *  a path enfind by "\" like "some/path/".
+   *  Defaults to "".
+   *
+   */
   constructor(loggerCB, answerCB, path = "") {
     this.path = path;
     this.worker = null;
@@ -37,11 +74,6 @@ class Elpi {
   /**
    * Starts the Elpi Worker
    * 
-   * @param {string} path
-   *   The path of the directory containing 
-   *  the elpi-worker.js file. Must be "" or 
-   *  a path enfind by "\" like "some/path/".
-   *
    */
   start() {
     this.worker = new Worker(this.path + "elpi-worker.js");
