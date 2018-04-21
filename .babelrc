@@ -1,0 +1,6 @@
+{
+  "ignore": [
+    "lib/elpi-worker.js"
+  ]
+}
+

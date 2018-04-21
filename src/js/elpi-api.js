@@ -1,35 +1,91 @@
-/* Message from the Elpi worker are 
-   treated by the following function */
-function onMessage(event) {
-    switch (event.data.type) {
-        case "answer":
-            console.log(event.data);
-            break;
-        case "log":
-            console.log(event.data);
-            break;
-    }
-}
+/**
+ * @file Elpi-api
+ * This file provide a small api to communicate
+ * with elpi-worker to run lambda-prolog programs
+ * in the browser
+ *
+ */
 
-var elpi = new Worker("elpi-worker.js");
 /* Binding the onMessage function to the worker */
-elpi.onmessage = onMessage;  
 
-class Rectangle {
-    constructor(hauteur, largeur) {
-      this.hauteur = hauteur;
-      this.largeur = largeur;
+class Elpi {
+  constructor(loggerCB, answerCB, path = "") {
+    this.path = path;
+    this.worker = null;
+
+    this.logger = loggerCB;
+    this.answer = answerCB;
+    
+    /* Message from the Elpi worker are 
+    treated by the following function */
+    this.onmessage = function (event) {
+      var d = event.data;
+      
+      switch (d.type) {
+          case "answer":
+              answerCB(d.args, d.assignments);
+              break;
+          case "log":
+              loggerCB(d.lvl, d.prefix, d.text);
+              break;
+      }
     }
-   
-    get area() {
-      return this.calcArea();
-    }
-  
-    calcArea() {
-      return this.largeur * this.hauteur;
-    }
+
+    this.start();
+  }
+
+  /**
+   * Starts the Elpi Worker
+   * 
+   * @param {string} path
+   *   The path of the directory containing 
+   *  the elpi-worker.js file. Must be "" or 
+   *  a path enfind by "\" like "some/path/".
+   *
+   */
+  start() {
+    this.worker = new Worker(this.path + "elpi-worker.js");
+    this.worker.onmessage = this.onmessage;  
+  }
+
+
+  /**
+   * Sends the query to the worker. The worker will
+   * then send successivley all the answers to that query.
+   * 
+   * @param {array({name: string, content: string})} files
+   *   An array of files. Files are describded using two
+   * strings: the name of the file and its content.
+   *   All files in the array will be compiled and ready
+   * to be queried (if no errors where found)
+   * 
+   */
+  compile(files) {
+    var message = { type: "compile", files };
+    this.worker.postMessage(message);
+  }
+
+  /**
+   * Sends the query to the worker. The worker will
+   * then send successivley all the answers to that query.
+   * 
+   * @param {string} code
+   *   The code of the query. It must end by a dot.
+   *   For example "plus 2 4 Res."
+   * 
+   */
+  queryAll(code) {
+    var message = { type: "queryAll", code };
+    this.worker.postMessage(message);
+  }
+
+  /**
+   * Stop and restart the Elpi Worker
+   * 
+   */
+  restart() {
+    this.worker.terminate();
+    this.start();
   }
   
-  const carré = new Rectangle(10, 10);
-  
-  console.log(carré.area);
+}

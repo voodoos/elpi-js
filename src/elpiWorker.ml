@@ -26,7 +26,7 @@ let onMessage e =
 (** Main *)
 let () =   
   Printexc.record_backtrace true;
-  print_string "worker started";
+  
   (** Loading data folder in the pseudo-filesystem 
     * Elpi needs some files to startup, they are packed in data.ml *)
   Log.debug "Populating the pseudo-file-system...";

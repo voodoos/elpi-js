@@ -5,10 +5,12 @@ pack:
 	cd src && python pack_data.py > data.ml
 
 lib: all
-	cp _build/default/src/elpiJs.bc.js lib/elpi.js && cp src/js/* lib/
+	cp _build/default/src/elpiWorker.bc.js lib/elpi-worker.js \
+	&& cp src/js/elpi-api.js lib/elpi-api.js
+#	&& cp _build/default/src/elpiAPI.bc.js lib/elpi-api.js
 
 dev:
-	@jbuilder build @install @DEFAULT --dev
+	rm lib/* && @jbuilder build @install @DEFAULT --dev
 
 test:
 	@jbuilder runtest
