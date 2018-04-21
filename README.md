@@ -1,16 +1,16 @@
-# ELpi-js
+# Elpi-js
 
 This project aims to provide an easy way to use the *Elpi lambda-prolog interpreter* ([homepage here](https://github.com/LPCIC/elpi/)), written in OCaml, in a completely web based setting.
 
 This is done in a three step process :
 
-- The Elpi_api in OCaml is compiled into a web worker using the [js_of_ocaml]() compiler. It creates the `lib/elpi-js.js` from `.ml` sources in the `src` folder.
+- The Elpi_api in OCaml is compiled into a web worker using the [js_of_ocaml]() compiler. It creates the `lib/elpi-js.js` file from `.ml` sources in the `src` folder.
 - A small API is given to handle the lifecycle of the worker and communicate with it in the `lib/elpi-api.js` file.
 - Finally a set of bindings for ReasonML is provided [TODO] for easy use of the api in web oriented projects.
 
 ## Using it in a node-based project
 The project is not yet published to npm, but you can add it to your project via git :
-````
+```
 yarn add https://github.com/voodoos/elpi-js
 ```
 
