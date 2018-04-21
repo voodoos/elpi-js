@@ -1,6 +1,6 @@
 (** Logging facilities
   * The debugging val acts as a flag 
-  * to show or not Debug-level messages *)
+  * to show or not dev-level messages *)
 
 let debugging = true
 
@@ -13,9 +13,16 @@ let string_of_level = function
 | Warning -> "warning" | Error -> "error"
 
 let log ?lvl:(lvl=Info) ?prefix:(prefix="") text =
-  if(not (lvl = Debug) || debugging) then
-   WorkerBindings.log (string_of_level lvl) prefix text
-   (*if prefix = "" then text else String.concat "" ["["; prefix; "] "; text]*)
+if(not (lvl = Debug) || debugging) then begin
+  let open Js in
+  let message = object%js (self) (* Equivalent of this *)
+    val type_ = string "log" 
+    val lvl = string (string_of_level lvl)
+    val prefix = string prefix 
+    val text = string text 
+  end in
+  Worker.post_message(message)
+end
 
 let debug ?prefix:(prefix="") text = 
   log ~lvl:Debug ~prefix:prefix text
