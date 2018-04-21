@@ -51,32 +51,25 @@ elp.queryAll("world A.");
  * 
  * */
 class Elpi {
-  /** 
-    * @callback loggerCB
-    * @param {string} lvl 
-    *   The log level (Info, Warning or Error).
-    * @param {string} prefix
-    *   The prefix, "who" sent the message.
-    * @param {string} text
-    *   The text of the message
-    */
-
-  /** 
-    * @callback answerCB
-    * @param {array(string)} args 
-    *   The args of the answer
-    * @param {array(string)} assignements
-    *   The assignements of the args
-    *  of the answer
-    */
-
   /**
    * Creates a worker.
    * 
-   * @param {loggerCB}
+   * @callback loggerCB
+   *    @param {string} lvl 
+   *       The log level (Info, Warning or Error).
+   *    @param {string} prefix
+   *       The prefix, "who" sent the message.
+   *    @param {string} text
+   *       The text of the message
    *  The callback used when the Worker asks for logging
-   * @param {answerCB} 
+   * 
+   * @callback answerCB
+   *    @param {array(string)} args 
+   *       The args of the answer
+   *    @param {array(string)} assignements
+   *       The assignements of the args
    *  The callback used when the Worker gives an answer
+   * 
    * @param {string} path = ""
    *   The path of the directory containing 
    *  the elpi-worker.js file. Must be "" or 
