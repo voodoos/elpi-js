@@ -1,7 +1,7 @@
 {
   "name": "elpi-js",
   "version": "0.1.0",
-  "main": "lib/api.js",
+  "main": "lib/elpi-api.js",
   "description": "A javascript toolset for the Elpi lambda-prolog interpreter.",
   "repository": "git@github.com:voodoos/elpi-js.git",
   "author": "VooDooS <thevoodoos@gmail.com>",
