@@ -39,15 +39,9 @@ class Elpi {
    *  The callback used when the Worker asks for logging
    * @param {answerCB} 
    *  The callback used when the Worker gives an answer
-   * @param {string} path = ""
-   *   The path of the directory containing 
-   *  the elpi-worker.js file. Must be "" or 
-   *  a path enfind by "\" like "some/path/".
-   *  Defaults to "".
    *
    */
-  constructor(loggerCB, answerCB, path = "") {
-    this.path = path;
+  constructor(loggerCB, answerCB) {
     this.worker = null;
 
     this.logger = loggerCB;
@@ -73,10 +67,10 @@ class Elpi {
 
   /**
    * Starts the Elpi Worker
-   * 
+   * It must be in the same folder.
    */
   start() {
-    this.worker = new Worker(this.path + "elpi-worker.js");
+    this.worker = new Worker("elpi-worker.js");
     this.worker.onmessage = this.onmessage;  
   }
 
