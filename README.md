@@ -2,6 +2,10 @@
 
 This project aims to provide an easy way to use the *Elpi lambda-prolog interpreter* ([homepage here](https://github.com/LPCIC/elpi/)), written in OCaml, in a completely web based setting.
 
+See the [DEMO](https://voodoos/github.io/elpi-js/demo).
+
+## What's in
+
 This is done in a three step process :
 
 - The Elpi_api in OCaml is compiled into a web worker using the [js_of_ocaml]() compiler. It creates the `lib/elpi-js.js` file from `.ml` sources in the `src` folder.
