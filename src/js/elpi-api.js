@@ -121,3 +121,5 @@ class Elpi {
   }
   
 }
+
+export default Elpi;
