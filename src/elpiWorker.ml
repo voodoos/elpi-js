@@ -13,11 +13,13 @@ let onMessage e =
      (Js.to_string n), (Js.to_string c)) (Js.to_array jpsa) 
   in
   let action = Js.to_string e##.type_ in
-  match action with
-  | "compile" -> ElpiWrapper.load(jsPairStringArrayToML e##.files)
-  | "queryOnce" -> ElpiWrapper.queryOnce(Js.to_string e##.code)
-  | "queryAll" -> ElpiWrapper.queryAll(Js.to_string e##.code)
-  | _ -> Log.error ("Unknown action \"" ^ action ^ "\".")
+  try 
+    match action with
+    | "compile" -> ElpiWrapper.load(jsPairStringArrayToML e##.files)
+    | "queryOnce" -> ElpiWrapper.queryOnce(Js.to_string e##.code)
+    | "queryAll" -> ElpiWrapper.queryAll(Js.to_string e##.code)
+    | _ -> Log.error ("Unknown action \"" ^ action ^ "\".")
+  with e -> Log.error ("Uncaught exception: \"" ^ (Printexc.to_string e) ^ "\".")
 
 
 
