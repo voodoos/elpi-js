@@ -2,14 +2,21 @@ exception Elpi_error
 
 
 let answer args assignments =
-  let toJSStringArray l = 
-    Js.array (Array.of_list (List.map (Js.string) l))
+  let toJS args asss =
+    Js.array (Array.of_list (
+      List.map2 (fun arg ass ->
+        object%js (self) (* Equivalent of this *)
+          val arg = Js.string arg
+          val ass = Js.string ass
+        end
+      ) args asss
+    )) 
   in
+
   let open Js in
   let message = object%js (self) (* Equivalent of this *)
     val type_ = string "answer" 
-    val args = toJSStringArray args
-    val assignments = toJSStringArray assignments
+    val values = toJS args assignments
   end in
   Worker.post_message(message)
 
