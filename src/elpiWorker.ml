@@ -18,14 +18,15 @@ let onMessage e =
     | "compile" -> ElpiWrapper.load(jsPairStringArrayToML e##.files)
     | "queryOnce" -> ElpiWrapper.queryOnce(Js.to_string e##.code)
     | "queryAll" -> ElpiWrapper.queryAll(Js.to_string e##.code)
-    | _ -> Log.error ("Unknown action \"" ^ action ^ "\".")
+    | _ -> Log.error ("Unknown action \"" ^ action ^ "\".");
+    flush_all ()
   
   (* TODO ElpiTODO : Elpi raises various exceptions on file not found for exemple, 
       but we can't catch them without a catch all clause...
       How to get line and character indication, precie error mesage ? *)
     with 
-    | Query.Query_failed -> Log.warning ("No results.")
-    | e -> Log.error ("Uncaught exception: \"" ^ (Printexc.to_string e) ^ "\".")
+    | Query.Query_failed -> Log.warning ("No results."); flush_all ()
+    | e -> Log.error ("Uncaught exception: \"" ^ (Printexc.to_string e) ^ "\"."); flush_all ()
 
 
 

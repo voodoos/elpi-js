@@ -28,7 +28,8 @@ let answer args assignments =
     let filenames = 
       Array.to_list (Array.map (fun (name, content) ->
         Sys_js.update_file name content; (* Populating *)
-        name) files) in
+        name) files) 
+    in
     try Query.load filenames
     with e -> Log.error (Printexc.to_string e); raise Elpi_error
   
