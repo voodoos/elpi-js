@@ -14,6 +14,12 @@ let get_prog () =
 let parse_and_compile files =
   let parsed_prog =  Elpi_API.Parse.program files in
   Elpi_API.Compile.program [parsed_prog]
+  (* TODO ElpiTODO : 
+  
+    Numerous errors from Elpi for all the externals in pervasives.elpi :
+    [Elpi] External new_safe not declared
+    ...
+  *)
 
 let load files = 
   prog := Some(parse_and_compile files)

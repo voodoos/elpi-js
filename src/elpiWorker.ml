@@ -62,7 +62,7 @@ let () =
 
   try 
     ignore(Elpi_API.Setup.init ~silent:false [] "");
-    (* TODO ElpiTODO : when not silent Elpi prints info on stderr not stdout *)
+    (* TODO ElpiTODO : when not silent Elpi prints info on file loading on stderr not stdout *)
     Log.info "Elpi started."
   with e -> 
       (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
