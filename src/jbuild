@@ -2,7 +2,7 @@
 
 (executable
  (
-  (name elpiWorker)
+  (name main)
   (libraries (js_of_ocaml js_of_ocaml.ppx js_of_ocaml.weak elpi base64)) ;js_of_ocaml-lwt lwt.ppx
   (js_of_ocaml ((flags (:standard +dynlink.js +toplevel.js))))
   (preprocess (pps (js_of_ocaml.ppx)))
@@ -14,7 +14,7 @@
  ((name DEFAULT)
   ; Would be nice to have data packing at compile time...
   ;(action (with-stdout-to "data.ml" (run python pack_data.py)))
-  (deps (elpiWorker.bc.js)) ;(glob_files data/*) 
+  (deps (main.bc.js)) ;(glob_files data/*) 
   ; (glob_files data/*)
  )
 )

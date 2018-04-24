@@ -15,9 +15,9 @@ let onMessage e =
   let action = Js.to_string e##.type_ in
   try 
     match action with
-    | "compile" -> ElpiWrapper.load(jsPairStringArrayToML e##.files)
-    | "queryOnce" -> ElpiWrapper.queryOnce(Js.to_string e##.code)
-    | "queryAll" -> ElpiWrapper.queryAll(Js.to_string e##.code)
+    | "compile" -> Query.load(jsPairStringArrayToML e##.files)
+    | "queryOnce" -> Query.queryOnce(Js.to_string e##.code)
+    | "queryAll" -> Query.queryAll(Js.to_string e##.code)
     | _ -> Log.error ("Unknown action \"" ^ action ^ "\".");
     flush_all ()
   
@@ -25,7 +25,7 @@ let onMessage e =
       but we can't catch them without a catch all clause...
       How to get line and character indication, precie error mesage ? *)
     with 
-    | Query.Query_failed -> Log.warning ("No results."); flush_all ()
+    | ElpiWrapper.Query_failed -> Log.warning ("No results."); flush_all ()
     | e -> Log.error ("Uncaught exception: \"" ^ (Printexc.to_string e) ^ "\"."); flush_all ()
 
 

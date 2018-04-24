@@ -1,62 +1,53 @@
-exception Elpi_error
+exception No_program
+exception Query_failed
 
+let prog = ref None
 
-let answer args assignments =
-  let toJS args asss =
-    Js.array (Array.of_list (
-      List.map2 (fun arg ass ->
-        object%js (self) (* Equivalent of this *)
-          val arg = Js.string arg
-          val ass = Js.string ass
-        end
-      ) args asss
-    )) 
-  in
+let get_prog () =
+  match !prog with
+    None -> raise No_program
+  | Some(p) -> p
 
-  let open Js in
-  let message = object%js (self) (* Equivalent of this *)
-    val type_ = string "answer" 
-    val values = toJS args assignments
-  end in
-  Worker.post_message(message)
-
-(* Elpi workflow functions *)
-
-(** The load function populate the pseudo filesystem
-  * with the users files and ask Elpi to compile them *)
-  let load files =
-    let filenames = 
-      Array.to_list (Array.map (fun (name, content) ->
-        Sys_js.update_file name content; (* Populating *)
-        name) files) 
-    in
-    try Query.load filenames
-    with e -> Log.error (Printexc.to_string e); raise Elpi_error
   
-  let queryOnce q = 
-    try 
-      let sol : Elpi_API.Data.solution = Query.query_once q in
-      let args, assignments = StringTools.list_of_sol sol in
-      answer args assignments
-    with Query.No_program -> Log.error "No program to query."
+
+(* Parsing and compiling files *)
+let parse_and_compile files =
+  let parsed_prog =  Elpi_API.Parse.program files in
+  Elpi_API.Compile.program [parsed_prog]
+  (* TODO ElpiTODO : 
   
-  let queryAll q = 
-    let loop_answer f (out : Elpi_API.Execute.outcome) =
-      (* print_string ("\nIter "^ (string_of_float f) ^ ":\n");*)
-      match out with
-      | Success(sol) -> 
-        let args, assignments = StringTools.list_of_sol sol in
-        answer args assignments
-      | NoMoreSteps -> ()
-      | Failure -> raise Query.Query_failed
-    in
-    try 
-      Query.query_loop q (fun () -> true
-      (* TODO : not satifying, we want to ask user !
-       * But complcated, three options :
-       *  - Lwt ? (subtil, best)
-       *  - Elpi hack (easy, costly) (running loop twice for second result etc..)
-       *  - A different Elpy query function : start, next, end *)
-      ) (loop_answer)
-    with Query.No_program -> Log.error "No program to query."
+    Numerous errors from Elpi for all the externals in pervasives.elpi :
+    [Elpi] External new_safe not declared
+    ...
+  *)
+
+let load files = 
+  prog := Some(parse_and_compile files)
+
+(* Parsing and compiling query *)
+let prepare_query prog query =
+  let parsed_query = Elpi_API.Parse.goal query in
+  Elpi_API.Compile.query prog parsed_query
+
+let query_once q =
+  let prog = get_prog () in
+  let compiled_query = prepare_query prog q in
+  
+  (* TODO ElpiTODO : static check *)
+
+  match (Elpi_API.Execute.once prog compiled_query) with
+    Success(data) -> data
+    | Failure -> raise Query_failed
+    | NoMoreSteps -> raise Query_failed
+
+
+let query_loop q more each =
+  let prog = get_prog () in
+  let query = prepare_query prog q in
+  
+  (* TODO ElpiTODO : static check *)
+
+  Elpi_API.Execute.loop prog query
+                        more
+                        each
   

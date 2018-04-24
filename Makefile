@@ -5,7 +5,7 @@ pack:
 	cd src && python pack_data.py > data.ml
 
 lib: all
-	cp _build/default/src/elpiWorker.bc.js lib/elpi-worker.js \
+	cp _build/default/src/main.bc.js lib/elpi-worker.js \
 	&& cp src/js/elpi-api.js lib/elpi-api.js \
 	&& sed -i bak 's/require/req2uire/' lib/elpi-worker.js
 # We need to rename require by something else in elpi-worker.js
