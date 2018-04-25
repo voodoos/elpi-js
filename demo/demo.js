@@ -14,6 +14,7 @@ function answer(vals) {
 
 const elp = new Elpi(log, answer);
 
+
 elp.compile([{
   name: "toto.elpi",
   content: "world \"hello\". world \"pussycat\"."

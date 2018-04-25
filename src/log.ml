@@ -35,3 +35,21 @@ log ~lvl:Warning ~prefix:prefix text
 
 let error ?prefix:(prefix="") text = 
 log ~lvl:Error ~prefix:prefix text
+
+type state =
+| Started
+| Running
+| Finished
+
+let string_of_state = function
+  | Started -> "started"| Running -> "running" | Finished -> "finished"
+
+let status id state ?details:(details="") =
+ let open Js in
+ let message = object%js (self)
+    val type_ = string "status" 
+    val id = string id
+    val state = string (string_of_state state)
+    val details = string details 
+  end in
+  Worker.post_message(message)

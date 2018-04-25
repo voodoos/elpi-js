@@ -1,8 +1,21 @@
 exception Elpi_error
+exception Unknown_action
 
 (** This file is the main program running Elpi. 
-  * It compiles to elperi-work.bc.js which is run as
+  * It compiles to elpi-worker.js which is run as
   * a web worker *)
+
+(* Callback handling is a bit tricky : messages cannot
+ * carry functions so we use unique ids *)
+let sendCallbackOrder ?b:(b=true) ?mess:(mess="") cbid  =
+  let open Js in
+  let message = object%js (self) (* Equivalent of this *)
+    val type_ = string "callback" 
+    val id = string cbid
+    val success = bool b
+    val message = string mess
+  end in
+  Worker.post_message(message)
 
 (* The onmessage function is critical for a web worker *)
 let onMessage e = 
@@ -10,23 +23,40 @@ let onMessage e =
     Array.map (fun obj -> 
       (*let arr = Js.to_array arr in*)
       let n = obj##.name and c = obj##.content in
-     (Js.to_string n), (Js.to_string c)) (Js.to_array jpsa) 
+     (Js.to_string n), (Js.to_string c)) (Js.to_array jpsa)  
   in
+
+
   let action = Js.to_string e##.type_ in
   try 
-    match action with
-    | "compile" -> Query.load(jsPairStringArrayToML e##.files)
-    | "queryOnce" -> Query.queryOnce(Js.to_string e##.code)
-    | "queryAll" -> Query.queryAll(Js.to_string e##.code)
-    | _ -> Log.error ("Unknown action \"" ^ action ^ "\".");
-    flush_all ()
+    (match action with
+    | "compile" -> 
+      Query.load(jsPairStringArrayToML e##.files);
+      (*Log.status "compile" Log.Finished ~details:"Files loaded"*)
+    | "queryOnce" -> 
+      Query.queryOnce(Js.to_string e##.code);
+      (*Log.status "query" Log.Finished ~details:"End of query."*)
+    | "queryAll" -> 
+      Query.queryAll(Js.to_string e##.code);
+      (*Log.status "query" Log.Finished ~details:"End of query."*)
+    | _ -> raise Unknown_action);
+    
+    flush_all ();
+    sendCallbackOrder e##.cb ~mess:"Finished"
   
   (* TODO ElpiTODO : Elpi raises various exceptions on file not found for exemple, 
       but we can't catch them without a catch all clause...
       How to get line and character indication, precie error mesage ? *)
     with 
-    | ElpiWrapper.Query_failed -> Log.warning ("No results."); flush_all ()
-    | e -> Log.error ("Uncaught exception: \"" ^ (Printexc.to_string e) ^ "\"."); flush_all ()
+    | Unknown_action -> 
+        sendCallbackOrder e##.cb ~b:false ~mess:"Unknown action"
+    | ElpiWrapper.Query_failed ->
+        sendCallbackOrder e##.cb ~b:false ~mess:"Query failed."
+    | ex ->
+        let mess = "Uncaught exception: \"" ^ (Printexc.to_string ex) ^ "\"." in
+        sendCallbackOrder e##.cb 
+                          ~b:false 
+                          ~mess:mess
 
 
 
@@ -64,9 +94,8 @@ let () =
   try 
     ignore(Elpi_API.Setup.init ~silent:false [] "");
     (* TODO ElpiTODO : when not silent Elpi prints info on file loading on stderr not stdout *)
-    Log.info "Elpi started."
+    sendCallbackOrder "start" ~b:true ~mess:"Elpi started."
   with e -> 
       (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
           but we can't catch them without a catch all clause... *)
-      Log.error (Printexc.to_string e); 
-      raise Elpi_error
+      sendCallbackOrder "start" ~b:false ~mess:(Printexc.to_string e)
