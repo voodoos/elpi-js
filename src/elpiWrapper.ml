@@ -18,15 +18,17 @@ let get_header () =
 
 (* Callback handling is a bit tricky : messages cannot
  * carry functions so we use unique ids *)
-let sendCallbackOrder ?b:(b=true) ?mess:(mess="") cbid  =
+let sendCallbackOrder ?b:(b=true) ?mess:(mess="") uuid  =
   let open Js in
   let message = object%js (self) (* Equivalent of this *)
-    val type_ = string "callback" 
-    val id = string cbid
-    val success = bool b
-    val message = string mess
+    val type_ = string (if b then "resolve" else "reject")
+    val uuid = string uuid
+    val value = string mess
   end in
   Worker.post_message(message)
+
+let resolve uuid value  = sendCallbackOrder ~mess:value uuid
+let reject uuid err  = sendCallbackOrder ~b:false ~mess:err uuid
 
 let start () =
   try 

@@ -12,12 +12,31 @@ function answer(vals) {
   log("answer", "", JSON.stringify(vals, null, 4));
 }
 
-const elp = new Elpi(log, answer);
+function start() {
+  log("info", "", "Elpi started");
+}
+
+const elp = new Elpi(log, answer, start);
 
 
-elp.compile([{
+var compilePromise = elp.compile([{
   name: "toto.elpi",
   content: "world \"hello\". world \"pussycat\"."
 }]);
 
-elp.queryAll("world A.");
+compilePromise.then(val =>{
+  log("info", "ElpiProm", val);
+});
+
+elp.queryAll("world A.").then(val => {
+  log("info", "ElpiProm", val);
+}).catch(err => {
+  log("error", "ElpiProm", err);
+});
+
+
+elp.queryAll("world A B.").then(val => {
+  log("info", "ElpiProm", val);
+}).catch(err => {
+  log("error", "ElpiProm", err);
+});

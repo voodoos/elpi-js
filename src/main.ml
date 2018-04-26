@@ -30,23 +30,21 @@ let onMessage e =
     | _ -> raise Unknown_action);
     
     flush_all ();
-    ElpiWrapper.sendCallbackOrder e##.cb ~mess:"Finished"
+    ElpiWrapper.resolve e##.uuid "Finished"
   
   (* TODO ElpiTODO : Elpi raises various exceptions on file not found for exemple, 
       but we can't catch them without a catch all clause...
       How to get line and character indication, precie error mesage ? *)
     with 
     | Unknown_action -> 
-        ElpiWrapper.sendCallbackOrder e##.cb ~b:false ~mess:"Unknown action"
+        ElpiWrapper.reject e##.uuid "Unknown action"
     | ElpiWrapper.No_program -> 
-        ElpiWrapper.sendCallbackOrder e##.cb ~b:false ~mess:"No program to query."
+        ElpiWrapper.reject e##.uuid "No program to query."
     | ElpiWrapper.Query_failed ->
-        ElpiWrapper.sendCallbackOrder e##.cb ~b:false ~mess:"Query failed."
+        ElpiWrapper.reject e##.uuid "Query failed."
     | ex ->
         let mess = "Uncaught: \"" ^ (Printexc.to_string ex) ^ "\"." in
-        ElpiWrapper.sendCallbackOrder e##.cb 
-                          ~b:false 
-                          ~mess:mess
+        ElpiWrapper.reject e##.uuid mess
 
 
 
