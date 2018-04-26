@@ -44,7 +44,7 @@ type state =
 let string_of_state = function
   | Started -> "started"| Running -> "running" | Finished -> "finished"
 
-let status id state ?details:(details="") =
+let status ?details:(details="") id state =
  let open Js in
  let message = object%js (self)
     val type_ = string "status" 
