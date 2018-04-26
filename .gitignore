@@ -5,6 +5,7 @@
 _build/
 *.install
 .merlin
+*.jsbak
 
 # macos
 .DS_Store
