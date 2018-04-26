@@ -1,22 +1,22 @@
 exception Elpi_error
 
 
-let answer args assignments =
-  let toJS args asss =
+let answer assignments =
+  let toJS asss =
     Js.array (Array.of_list (
-      List.map2 (fun arg ass ->
+      List.map (fun (arg, ass) ->
         object%js (self) (* Equivalent of this *)
           val arg = Js.string arg
           val ass = Js.string ass
         end
-      ) args asss
+      ) asss
     )) 
   in
 
   let open Js in
   let message = object%js (self) (* Equivalent of this *)
     val type_ = string "answer" 
-    val values = toJS args assignments
+    val values = toJS assignments
   end in
   Worker.post_message(message)
 
@@ -36,8 +36,8 @@ let answer args assignments =
   let queryOnce q = 
     try 
       let sol : Elpi_API.Data.solution = ElpiWrapper.query_once q in
-      let args, assignments = StringTools.list_of_sol sol in
-      answer args assignments
+      let assignments = StringTools.list_of_sol sol in
+      answer assignments
     with ElpiWrapper.No_program -> Log.error "No program to query."
   
   let queryAll q = 
@@ -45,8 +45,8 @@ let answer args assignments =
       (* print_string ("\nIter "^ (string_of_float f) ^ ":\n");*)
       match out with
       | Success(sol) -> 
-        let args, assignments = StringTools.list_of_sol sol in
-        answer args assignments
+        let assignments = StringTools.list_of_sol sol in
+        answer assignments
       | NoMoreSteps -> ()
       | Failure -> raise ElpiWrapper.Query_failed
     in

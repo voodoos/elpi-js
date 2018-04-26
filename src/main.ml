@@ -5,18 +5,6 @@ exception Unknown_action
   * It compiles to elpi-worker.js which is run as
   * a web worker *)
 
-(* Callback handling is a bit tricky : messages cannot
- * carry functions so we use unique ids *)
-let sendCallbackOrder ?b:(b=true) ?mess:(mess="") cbid  =
-  let open Js in
-  let message = object%js (self) (* Equivalent of this *)
-    val type_ = string "callback" 
-    val id = string cbid
-    val success = bool b
-    val message = string mess
-  end in
-  Worker.post_message(message)
-
 (* The onmessage function is critical for a web worker *)
 let onMessage e = 
   let jsPairStringArrayToML jpsa =
@@ -42,19 +30,19 @@ let onMessage e =
     | _ -> raise Unknown_action);
     
     flush_all ();
-    sendCallbackOrder e##.cb ~mess:"Finished"
+    ElpiWrapper.sendCallbackOrder e##.cb ~mess:"Finished"
   
   (* TODO ElpiTODO : Elpi raises various exceptions on file not found for exemple, 
       but we can't catch them without a catch all clause...
       How to get line and character indication, precie error mesage ? *)
     with 
     | Unknown_action -> 
-        sendCallbackOrder e##.cb ~b:false ~mess:"Unknown action"
+        ElpiWrapper.sendCallbackOrder e##.cb ~b:false ~mess:"Unknown action"
     | ElpiWrapper.Query_failed ->
-        sendCallbackOrder e##.cb ~b:false ~mess:"Query failed."
+        ElpiWrapper.sendCallbackOrder e##.cb ~b:false ~mess:"Query failed."
     | ex ->
         let mess = "Uncaught exception: \"" ^ (Printexc.to_string ex) ^ "\"." in
-        sendCallbackOrder e##.cb 
+        ElpiWrapper.sendCallbackOrder e##.cb 
                           ~b:false 
                           ~mess:mess
 
@@ -91,11 +79,4 @@ let () =
    * to be loaded in the pseudo-filesystem *)
   Log.debug "Starting Elpi...";
 
-  try 
-    ignore(Elpi_API.Setup.init ~silent:false [] "");
-    (* TODO ElpiTODO : when not silent Elpi prints info on file loading on stderr not stdout *)
-    sendCallbackOrder "start" ~b:true ~mess:"Elpi started."
-  with e -> 
-      (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
-          but we can't catch them without a catch all clause... *)
-      sendCallbackOrder "start" ~b:false ~mess:(Printexc.to_string e)
+  ElpiWrapper.start()
