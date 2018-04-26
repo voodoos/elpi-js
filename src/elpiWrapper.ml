@@ -62,7 +62,7 @@ let prepare_query prog query =
   if (not (Elpi_API.Compile.static_check 
           (get_header ())
           compiled_query)) 
-    then  raise StaticCheck_failed;
+    then  raise StaticCheck_failed; (* TODO ElpiTODO : output done on sdout, should use Warning / errors *)
   (* We compile *)
   Elpi_API.Compile.link compiled_query
 

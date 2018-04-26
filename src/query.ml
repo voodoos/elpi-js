@@ -48,7 +48,7 @@ let answer assignments =
         let assignments = StringTools.list_of_sol sol in
         answer assignments
       | NoMoreSteps -> ()
-      | Failure -> raise ElpiWrapper.Query_failed
+      | Failure -> () (*raise ElpiWrapper.Query_failed*) (* ElpiTODO : looks like NoMoreSteps is never reached *)
     in
     try 
       ElpiWrapper.query_loop q (fun () -> true
