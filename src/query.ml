@@ -38,7 +38,7 @@ let answer assignments =
       let sol : Elpi_API.Data.solution = ElpiWrapper.query_once q in
       let assignments = StringTools.list_of_sol sol in
       answer assignments
-    with ElpiWrapper.No_program -> Log.error "No program to query."
+    with ElpiWrapper.No_program -> raise ElpiWrapper.No_program
   
   let queryAll q = 
     let loop_answer f (out : Elpi_API.Execute.outcome) =
@@ -58,5 +58,5 @@ let answer assignments =
        *  - Elpi hack (easy, costly) (running loop twice for second result etc..)
        *  - A different Elpy query function : start, next, end *)
       ) (loop_answer)
-    with ElpiWrapper.No_program -> Log.error "No program to query."
+    with ElpiWrapper.No_program -> raise ElpiWrapper.No_program
   

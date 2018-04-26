@@ -38,10 +38,12 @@ let onMessage e =
     with 
     | Unknown_action -> 
         ElpiWrapper.sendCallbackOrder e##.cb ~b:false ~mess:"Unknown action"
+    | ElpiWrapper.No_program -> 
+        ElpiWrapper.sendCallbackOrder e##.cb ~b:false ~mess:"No program to query."
     | ElpiWrapper.Query_failed ->
         ElpiWrapper.sendCallbackOrder e##.cb ~b:false ~mess:"Query failed."
     | ex ->
-        let mess = "Uncaught exception: \"" ^ (Printexc.to_string ex) ^ "\"." in
+        let mess = "Uncaught: \"" ^ (Printexc.to_string ex) ^ "\"." in
         ElpiWrapper.sendCallbackOrder e##.cb 
                           ~b:false 
                           ~mess:mess
