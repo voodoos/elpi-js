@@ -33,7 +33,7 @@ let start () =
     let h, _ = Elpi_API.Setup.init [] ~builtins:(Elpi_builtin.std_builtins) ~basedir:"" ~silent:false  in
     (* In Elpi_API 1.0 we need to keep that header to feed it to the compiler *)
     header := Some(h);
-    (* TODO ElpiTODO : when not silent Elpi prints info on file loading on stderr not stdout *)
+    (* TODO ElpiTODO : when not silent Elpi prints info on file already-loaded on stderr not stdout *)
     sendCallbackOrder "start" ~b:true ~mess:"Elpi started."
   with e -> 
       (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
@@ -62,7 +62,8 @@ let prepare_query prog query =
   if (not (Elpi_API.Compile.static_check 
           (get_header ())
           compiled_query)) 
-    then  raise StaticCheck_failed; (* TODO ElpiTODO : output done on sdout, should use Warning / errors *)
+    (* TODO ElpiTODO : output done on sdout, should use Warning / errors *)
+    then  raise StaticCheck_failed; 
   (* We compile *)
   Elpi_API.Compile.link compiled_query
 
