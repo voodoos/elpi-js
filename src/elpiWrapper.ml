@@ -18,7 +18,7 @@ let get_header () =
 
 (* Callback handling is a bit tricky : messages cannot
  * carry functions so we use unique ids *)
-let sendCallbackOrder ?b:(b=true) payload uuid  =
+let sendCallbackOrder ?b:(b=true) (payload: 'a Js.t) uuid  =
   let open Js in
   let message = object%js (self) (* Equivalent of this *)
     val type_ = string (if b then "resolve" else "reject")
@@ -36,11 +36,11 @@ let start () =
     (* In Elpi_API 1.0 we need to keep that header to feed it to the compiler *)
     header := Some(h);
     (* TODO ElpiTODO : when not silent Elpi prints info on file already-loaded on stderr not stdout *)
-    resolve "start""Elpi started."
+    resolve "start" (Js.string "Elpi started.")
   with e -> (* TODO: wrong *)
       (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
           but we can't catch them without a catch all clause... *)
-      reject "start" (Printexc.to_string e)
+      reject "start" (Js.string (Printexc.to_string e))
 
 (* Parsing and compiling files *)
 let parse_and_compile files =
@@ -60,6 +60,7 @@ let load files =
 let prepare_query prog query =
   let parsed_query = Elpi_API.Parse.goal query in
   let compiled_query = Elpi_API.Compile.query prog parsed_query in
+  
   (* We run Elpi's statick checks *)
   if (not (Elpi_API.Compile.static_check 
           (get_header ())
@@ -82,8 +83,6 @@ let query_once q =
 let query_loop q more each =
   let prog = get_prog () in
   let executable = prepare_query prog q in
-  
-  (* TODO ElpiTODO : static check *)
 
   Elpi_API.Execute.loop executable
                         more

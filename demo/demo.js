@@ -12,24 +12,25 @@ function answer(vals) {
   log("answer", "", JSON.stringify(vals, null, 4));
 }
 
-function start() {
-  log("info", "", "Elpi started");
-}
+const elp = new Elpi(log, answer);
 
-const elp = new Elpi(log, answer, start);
-
+elp.start.then(val => { 
+  log("info", "ElpiProm", "toto"); 
+});
 
 var compilePromise = elp.compile([{
   name: "toto.elpi",
-  content: "world \"hello\". world \"pussycat\"."
+  content: 'world "hello". world "world".'
 }]);
 
 compilePromise.then(val =>{
   log("info", "ElpiProm", val);
+}).catch(err => {
+  log("error", "ElpiProm", err);
 });
 
 elp.queryAll("world A.").then(val => {
-  log("info", "ElpiProm", val);
+  log("info", "ElpiProm", JSON.stringify(val, null, 4));
 }).catch(err => {
   log("error", "ElpiProm", err);
 });
@@ -39,4 +40,18 @@ elp.queryAll("world A B.").then(val => {
   log("info", "ElpiProm", val);
 }).catch(err => {
   log("error", "ElpiProm", err);
+
+  elp.restart().then(val => {
+    log("info", "ElpiProm", val);
+  
+    elp.queryAll("world A.").then(val => {
+      log("info", "ElpiProm", JSON.stringify(val, null, 4));
+    }).catch(err => {
+      log("error", "ElpiProm", err);
+    });
+  }).catch(err => {
+    log("error", "ElpiProm", err);
+  });
 });
+
+

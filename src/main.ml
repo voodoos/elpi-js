@@ -17,26 +17,26 @@ let onMessage e =
 
   let open ElpiWrapper in
   let action = Js.to_string e##.type_
-  and uuid = e##.uuid 
-  and code = Js.to_string e##.code in
+  and uuid = e##.uuid in
+
   try 
     (match action with
     | "compile" -> 
       Query.load(jsPairStringArrayToML e##.files);
       (*Log.status "compile" Log.Finished ~details:"Files loaded"*)
     | "queryOnce" -> 
-      let answer = Query.queryOnce(code) in
+      let answer = Query.queryOnce(Js.to_string e##.code) in
       resolve uuid (ToJs.arrayOfAssignements answer);
       raise Out
       (*Log.status "query" Log.Finished ~details:"End of query."*)
     | "queryAll" -> 
-      let answers = Query.queryAll(code) in
+      let answers = Query.queryAll(Js.to_string e##.code) in
       resolve uuid (ToJs.list (List.map (ToJs.arrayOfAssignements) answers));
       raise Out
       (*Log.status "query" Log.Finished ~details:"End of query."*)
     | _ -> raise Unknown_action);
     
-    resolve uuid "Finished"
+    resolve uuid (Js.string "Finished")
   
   (* TODO ElpiTODO : Elpi raises various exceptions on file not found for exemple, 
       but we can't catch them without a catch all clause...
@@ -44,14 +44,14 @@ let onMessage e =
     with 
     | Out -> ()
     | Unknown_action -> 
-        reject uuid "Unknown action"
+        reject uuid (Js.string "Unknown action")
     | No_program -> 
-        reject uuid "No program to query."
+        reject uuid (Js.string "No program to query.")
     | Query_failed ->
-        reject uuid "Query failed."
+        reject uuid (Js.string "Query failed.")
     | ex ->
         let mess = "Uncaught: \"" ^ (Printexc.to_string ex) ^ "\"." in
-        reject uuid mess
+        reject uuid (Js.string  mess)
 
 
 
