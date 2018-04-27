@@ -50,6 +50,26 @@ elp.queryAll("world A.");
 
 ```js
 /**
+ * @file Elpi-api
+ * This file provide a small api to communicate
+ * with elpi-worker to run lambda-prolog programs
+ * in the browser
+ *
+ */
+
+function generateUUID() { // Public Domain/MIT
+  var d = new Date().getTime();
+  if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
+      d += performance.now(); //use high-precision timer if available
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = (d + Math.random() * 16) % 16 | 0;
+      d = Math.floor(d / 16);
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+/**
  *  The main class, handling the lifecycle of
  * the Elpi Worker. 
  * 
@@ -74,18 +94,15 @@ class Elpi {
    *       The assignements of the args
    *  The callback used when the Worker gives an answer
    * 
-   * @param {string} path = ""
-   *   The path of the directory containing 
-   *  the elpi-worker.js file. Must be "" or 
-   *  a path enfind by "\" like "some/path/".
-   *  Defaults to "".
-   *
    */
-  constructor(loggerCB, answerCB, path = "");
+  constructor(loggerCB, answerCB);
 
   /**
-   * Sends the query to the worker. The worker will
-   * then send successivley all the answers to that query.
+   * Sends some files for compilation to the Worker.
+   * It returns a promise.
+   * At the end of the execution the worker will resolve
+   * the promise with a status message. Or reject it with
+   * an error message.
    * 
    * @param {array({name: string, content: string})} files
    *   An array of files. Files are describded using two
@@ -93,26 +110,38 @@ class Elpi {
    *   All files in the array will be compiled and ready
    * to be queried (if no errors where found)
    * 
+   * @returns {Promise}
    */
   compile(files);
+
 
   /**
    * Sends the query to the worker. The worker will
    * then send successivley all the answers to that query.
+   * It also returns a promise. 
+   * At the end of the execution the worker will resolve
+   * the promise with the array of all answers.
+   * Or reject it with an error message.
    * 
    * @param {string} code
    *   The code of the query. It must end by a dot.
    *   For example "plus 2 4 Res."
    * 
+   * @returns {Promise}
    */
   queryAll(code);
 
   /**
    * Stop and restart the Elpi Worker
    * 
+   * Returns a promise which is stored 
+   * in the start property.
+   * 
+   * @returns {Promise}
    */
   restart();
-  
+
 }
 
+export default Elpi;
 ```
