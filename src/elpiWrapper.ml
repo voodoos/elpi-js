@@ -18,17 +18,17 @@ let get_header () =
 
 (* Callback handling is a bit tricky : messages cannot
  * carry functions so we use unique ids *)
-let sendCallbackOrder ?b:(b=true) ?mess:(mess="") uuid  =
+let sendCallbackOrder ?b:(b=true) payload uuid  =
   let open Js in
   let message = object%js (self) (* Equivalent of this *)
     val type_ = string (if b then "resolve" else "reject")
     val uuid = string uuid
-    val value = string mess
+    val value = payload
   end in
   Worker.post_message(message)
 
-let resolve uuid value  = sendCallbackOrder ~mess:value uuid
-let reject uuid err  = sendCallbackOrder ~b:false ~mess:err uuid
+let resolve uuid value  = sendCallbackOrder value uuid
+let reject uuid err  = sendCallbackOrder ~b:false err uuid
 
 let start () =
   try 
@@ -36,11 +36,11 @@ let start () =
     (* In Elpi_API 1.0 we need to keep that header to feed it to the compiler *)
     header := Some(h);
     (* TODO ElpiTODO : when not silent Elpi prints info on file already-loaded on stderr not stdout *)
-    sendCallbackOrder "start" ~b:true ~mess:"Elpi started."
-  with e -> 
+    resolve "start""Elpi started."
+  with e -> (* TODO: wrong *)
       (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
           but we can't catch them without a catch all clause... *)
-      sendCallbackOrder "start" ~b:false ~mess:(Printexc.to_string e)
+      reject "start" (Printexc.to_string e)
 
 (* Parsing and compiling files *)
 let parse_and_compile files =

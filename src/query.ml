@@ -2,21 +2,10 @@ exception Elpi_error
 
 
 let answer assignments =
-  let toJS asss =
-    Js.array (Array.of_list (
-      List.map (fun (arg, ass) ->
-        object%js (self) (* Equivalent of this *)
-          val arg = Js.string arg
-          val ass = Js.string ass
-        end
-      ) asss
-    )) 
-  in
-
   let open Js in
   let message = object%js (self) (* Equivalent of this *)
     val type_ = string "answer" 
-    val values = toJS assignments
+    val values = ToJs.arrayOfAssignements assignments
   end in
   Worker.post_message(message)
 
@@ -37,15 +26,18 @@ let answer assignments =
     try 
       let sol : Elpi_API.Data.solution = ElpiWrapper.query_once q in
       let assignments = StringTools.list_of_sol sol in
-      answer assignments
+      answer assignments;
+      assignments
     with ElpiWrapper.No_program -> raise ElpiWrapper.No_program
   
   let queryAll q = 
+    let res = ref [] in
     let loop_answer f (out : Elpi_API.Execute.outcome) =
       (* print_string ("\nIter "^ (string_of_float f) ^ ":\n");*)
       match out with
       | Success(sol) -> 
         let assignments = StringTools.list_of_sol sol in
+        res := assignments::!res;
         answer assignments
       | NoMoreSteps -> ()
       | Failure -> () (*raise ElpiWrapper.Query_failed*) (* ElpiTODO : looks like NoMoreSteps is never reached *)
@@ -57,6 +49,7 @@ let answer assignments =
        *  - Lwt ? (subtil, best)
        *  - Elpi hack (easy, costly) (running loop twice for second result etc..)
        *  - A different Elpy query function : start, next, end *)
-      ) (loop_answer)
+      ) (loop_answer);
+      !res
     with ElpiWrapper.No_program -> raise ElpiWrapper.No_program
   

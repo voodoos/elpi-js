@@ -1,5 +1,6 @@
 exception Elpi_error
 exception Unknown_action
+exception Out
 
 (** This file is the main program running Elpi. 
   * It compiles to elpi-worker.js which is run as
@@ -14,37 +15,43 @@ let onMessage e =
      (Js.to_string n), (Js.to_string c)) (Js.to_array jpsa)  
   in
 
-
-  let action = Js.to_string e##.type_ in
+  let open ElpiWrapper in
+  let action = Js.to_string e##.type_
+  and uuid = e##.uuid 
+  and code = Js.to_string e##.code in
   try 
     (match action with
     | "compile" -> 
       Query.load(jsPairStringArrayToML e##.files);
       (*Log.status "compile" Log.Finished ~details:"Files loaded"*)
     | "queryOnce" -> 
-      Query.queryOnce(Js.to_string e##.code);
+      let answer = Query.queryOnce(code) in
+      resolve uuid (ToJs.arrayOfAssignements answer);
+      raise Out
       (*Log.status "query" Log.Finished ~details:"End of query."*)
     | "queryAll" -> 
-      Query.queryAll(Js.to_string e##.code);
+      let answers = Query.queryAll(code) in
+      resolve uuid (ToJs.list (List.map (ToJs.arrayOfAssignements) answers));
+      raise Out
       (*Log.status "query" Log.Finished ~details:"End of query."*)
     | _ -> raise Unknown_action);
     
-    flush_all ();
-    ElpiWrapper.resolve e##.uuid "Finished"
+    resolve uuid "Finished"
   
   (* TODO ElpiTODO : Elpi raises various exceptions on file not found for exemple, 
       but we can't catch them without a catch all clause...
       How to get line and character indication, precie error mesage ? *)
     with 
+    | Out -> ()
     | Unknown_action -> 
-        ElpiWrapper.reject e##.uuid "Unknown action"
-    | ElpiWrapper.No_program -> 
-        ElpiWrapper.reject e##.uuid "No program to query."
-    | ElpiWrapper.Query_failed ->
-        ElpiWrapper.reject e##.uuid "Query failed."
+        reject uuid "Unknown action"
+    | No_program -> 
+        reject uuid "No program to query."
+    | Query_failed ->
+        reject uuid "Query failed."
     | ex ->
         let mess = "Uncaught: \"" ^ (Printexc.to_string ex) ^ "\"." in
-        ElpiWrapper.reject e##.uuid mess
+        reject uuid mess
 
 
 
