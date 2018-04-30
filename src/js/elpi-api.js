@@ -183,7 +183,7 @@ class Elpi {
   restart() {
     this.worker.terminate();
     /* We need to reject all non-resolved promises */
-    this.rejects.array.forEach(r => {
+    this.rejects.forEach(r => {
       r(new Error("Elpi restarted"));
     });
     this.resolves = [];
