@@ -20,7 +20,9 @@ let answer assignments =
         name) files) 
     in
     try ElpiWrapper.load filenames
-    with e -> Log.error (Printexc.to_string e); raise Elpi_error
+    with 
+    | ElpiWrapper.StaticCheck_failed -> raise ElpiWrapper.StaticCheck_failed
+    | e -> Log.error (Printexc.to_string e); raise Elpi_error
   
   let queryOnce q = 
     try 

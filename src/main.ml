@@ -50,12 +50,8 @@ let onMessage e =
     | Query_failed ->
         reject uuid (Js.string "Query failed.")
     | ex ->
-        let mess = "Uncaught: \"" ^ (Printexc.to_string ex) ^ "\"." in
+        let mess = (Printexc.to_string ex) in
         reject uuid (Js.string  mess)
-
-
-
-
     
 (** Main *)
 let () =   
