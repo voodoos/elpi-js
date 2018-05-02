@@ -33,11 +33,11 @@ type assert prop -> err -> prop.
 
 type error list string -> prop.
 :name "default-typechecking-error"
-error Msg :- iter (x\ print x) Msg.
+error Msg :- iter (x\ js_err "Checker" x) Msg.
 
 type warning string -> prop.
 :name "default-typechecking-warning"
-warning Msg :- print Msg.
+warning Msg :- js_warn "Checker" Msg.
 
 assert P _ :- P, !.
 assert _ (type-err T Ty ETy) :- !,

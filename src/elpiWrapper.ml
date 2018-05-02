@@ -32,7 +32,7 @@ let reject uuid err  = sendCallbackOrder ~b:false err uuid
 
 let start () =
   try 
-    let h, _ = Elpi_API.Setup.init [] ~builtins:(Elpi_builtin.std_builtins) ~basedir:"" ~silent:false  in
+    let h, _ = Elpi_API.Setup.init [] ~builtins:(Builtins.make ()) ~basedir:"" ~silent:false  in
     (* In Elpi_API 1.0 we need to keep that header to feed it to the compiler *)
     header := Some(h);
     (* TODO ElpiTODO : when not silent Elpi prints info on file already-loaded on stderr not stdout *)
