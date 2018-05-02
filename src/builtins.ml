@@ -2,6 +2,13 @@ let make () =
     let open Elpi_API.Extend.BuiltInPredicate in
     builtin_of_declaration 
       ([MLCode(
+        Pred("js_dummy",
+          Easy "js_dummy is a dummy pred for dummy purposes (type-check at compile time).",
+          fun ~depth:_ -> ()
+        ),
+        DocAbove 
+      );
+      MLCode(
         Pred("js_info",
           In(string, "P", 
             In(string, "M", Easy "js_info P M sends an info message M with prefix P.")),

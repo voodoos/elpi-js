@@ -32,29 +32,16 @@ let reject uuid err  = sendCallbackOrder ~b:false err uuid
 
 let start () =
   try 
-    let h, _ = Elpi_API.Setup.init [] ~builtins:(Builtins.make ()) ~basedir:"" ~silent:false  in
+    let h, _ = Elpi_API.Setup.init [] ~builtins:(Builtins.make ()) ~basedir:"" ~silent:false in
     (* In Elpi_API 1.0 we need to keep that header to feed it to the compiler *)
     header := Some(h);
+
     (* TODO ElpiTODO : when not silent Elpi prints info on file already-loaded on stderr not stdout *)
     resolve "start" (Js.string "Elpi started.")
   with e -> (* TODO: wrong *)
       (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
           but we can't catch them without a catch all clause... *)
       reject "start" (Js.string (Printexc.to_string e))
-
-(* Parsing and compiling files *)
-let parse_and_compile files =
-  let parsed_prog =  Elpi_API.Parse.program files in
-  Elpi_API.Compile.program (get_header ()) [parsed_prog]
-  (* TODO ElpiTODO : 
-  
-    Numerous errors from Elpi for all the externals in pervasives.elpi :
-    [Elpi] External new_safe not declared
-    ...
-  *)
-
-let load files = 
-  prog := Some(parse_and_compile files)
 
 (* Parsing and compiling query *)
 let prepare_query prog query =
@@ -69,6 +56,24 @@ let prepare_query prog query =
     then  raise StaticCheck_failed; 
   (* We compile *)
   Elpi_API.Compile.link compiled_query
+
+let parse_and_compile files =
+  let parsed_prog =  Elpi_API.Parse.program files in
+  let compiled_prog = Elpi_API.Compile.program (get_header ()) [parsed_prog] in
+  (* TODO ElpiTODO : 
+  
+    Numerous errors from Elpi for all the externals in pervasives.elpi :
+    [Elpi] External new_safe not declared
+    ...
+  *)
+
+  (* We use a "dummy" query to do a first static check 
+   * Elpi seems to need a query to do a static check *)
+  ignore (prepare_query compiled_prog "js_dummy.");
+  compiled_prog
+
+let load files = 
+  prog := Some(parse_and_compile files)
 
 let query_once q =
   let prog = get_prog () in
