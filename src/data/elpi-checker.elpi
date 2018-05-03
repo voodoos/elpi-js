@@ -218,8 +218,14 @@ pred rev-aux i:list A, i:list A, o:list A.
 rev-aux [X|XS] ACC R :- rev-aux XS [X|ACC] R.
 rev-aux [] L L.
 
+split [(const C) `: T | Tl] LACC RACC L R :- split Tl [C | LACC] [T | RACC] L R.
+split [] LACC RACC LACC RACC.
+
+
 typecheck-program P Q DeclaredTypes :-
-  collect-predicates-program P DeclaredTypes AllTypes, !,
+  collect-predicates-program P DeclaredTypes AllTypes,
+  split AllTypes [] [] NS TS, js_types NS TS, !,
+  pp-list DeclaredTypes TPP,
   under-env {rev AllTypes} (typecheck P Q).
 
 % ---------- warnings ------------------------------------------------------
