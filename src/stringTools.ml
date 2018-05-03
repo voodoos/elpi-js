@@ -59,3 +59,45 @@ let list_of_sol (sol : Elpi_API.Data.solution) =
   let assignments : (string * string) list = string_list_of_assignements sol.assignments in
   assignments
   
+(* type arrow typ -> typ -> typ.
+type tconst string -> typ.
+type tapp list typ -> typ.
+type prop typ.
+type forall (typ -> typ) -> typ. % polymorphic type declarations
+type ctype string -> typ. 
+
+type typ = 
+| Arrow of typ * typ
+| App of typ * typ
+| Forall of typ * typ
+| Ctype of string
+| Prop
+
+let lcs = String.concat ""
+let string_of_typ  = 
+  let rec aux = function
+  | Prop -> "prop"
+  | Ctype(s) -> s
+  | Arrow(t1, t2) -> lcs [aux t1; " -> ("; aux t2; ")"]
+  | App(t1, t2) -> lcs [aux t1; " ("; aux t2; ")"]
+  | Forall(t1, t2) -> lcs ["V"; aux t1; ", ("; aux t2; ")"]
+  in
+  aux
+
+let to_typ_once term = 
+  let open Elpi_API.Extend.Data in
+  match (look 0 term) with
+  | App(c, t , lt) -> 
+    begin match (Constants.show c) with
+    | "ctype" -> begin match (look 0 t) with
+                 | CData(c) -> Ctype(C.to_string c)
+                 | _ -> Ctype "Bad ctype" end 
+    | "prop" -> Prop
+    | "tapp"
+    | _ -> Ctype "Unknown typ"
+    end
+  | _ -> Ctype "This is no typ"
+
+
+
+let pp_type term = string_of_typ (to_typ_once term)*)

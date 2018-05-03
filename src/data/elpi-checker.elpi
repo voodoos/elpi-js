@@ -25,6 +25,7 @@ iter _ [].
 iter F [X | XS] :- F X, iter F XS.
 
 % --------- error reporting  ------------------------------------------------
+
 kind err type.
 type type-err term -> typ -> typ -> err.
 type wrong-arity term -> typ -> list term -> err.
@@ -33,11 +34,11 @@ type assert prop -> err -> prop.
 
 type error list string -> prop.
 :name "default-typechecking-error"
-error Msg :- iter (x\ js_err "Checker" x) Msg.
+error Msg :- iter (x\ js_err "Checker" x) Msg. % elpi-js: was print
 
 type warning string -> prop.
 :name "default-typechecking-warning"
-warning Msg :- js_warn "Checker" Msg.
+warning Msg :- js_warn "Checker" Msg.  % elpi-js: was print
 
 assert P _ :- P, !.
 assert _ (type-err T Ty ETy) :- !,
@@ -218,15 +219,21 @@ pred rev-aux i:list A, i:list A, o:list A.
 rev-aux [X|XS] ACC R :- rev-aux XS [X|ACC] R.
 rev-aux [] L L.
 
-split [(const C) `: T | Tl] LACC RACC L R :- split Tl [C | LACC] [T | RACC] L R.
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ELPI-JS SPECIFIC %%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+split [(const C) `: T | Tl] LACC RACC L R :- 
+  ppt T ST, split Tl [C | LACC] [ST | RACC] L R.
 split [] LACC RACC LACC RACC.
-
 
 typecheck-program P Q DeclaredTypes :-
   collect-predicates-program P DeclaredTypes AllTypes,
   split AllTypes [] [] NS TS, js_types NS TS, !,
   pp-list DeclaredTypes TPP,
   under-env {rev AllTypes} (typecheck P Q).
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%% END OF  SPECIFIC %%%
+%%%%%%%%%%%%%%%%%%%%%%%%
 
 % ---------- warnings ------------------------------------------------------
 

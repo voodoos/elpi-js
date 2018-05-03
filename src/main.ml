@@ -1,6 +1,5 @@
 exception Elpi_error
 exception Unknown_action
-exception Out
 
 (** This file is the main program running Elpi. 
   * It compiles to elpi-worker.js which is run as
@@ -20,29 +19,25 @@ let onMessage e =
   and uuid = e##.uuid in
 
   try 
-    (match action with
+    match action with
     | "compile" -> 
       Query.load(jsPairStringArrayToML e##.files);
+      resolve uuid (Js.array !Builtins.types)
       (*Log.status "compile" Log.Finished ~details:"Files loaded"*)
     | "queryOnce" -> 
       let answer = Query.queryOnce(Js.to_string e##.code) in
-      resolve uuid (ToJs.arrayOfAssignements answer);
-      raise Out
+      resolve uuid (ToJs.arrayOfAssignements answer)
       (*Log.status "query" Log.Finished ~details:"End of query."*)
     | "queryAll" -> 
       let answers = Query.queryAll(Js.to_string e##.code) in
-      resolve uuid (ToJs.list (List.map (ToJs.arrayOfAssignements) answers));
-      raise Out
+      resolve uuid (ToJs.list (List.map (ToJs.arrayOfAssignements) answers))
       (*Log.status "query" Log.Finished ~details:"End of query."*)
-    | _ -> raise Unknown_action);
-    
-    resolve uuid (Js.string "Finished")
+    | _ -> raise Unknown_action
   
   (* TODO ElpiTODO : Elpi raises various exceptions on file not found for exemple, 
       but we can't catch them without a catch all clause...
       How to get line and character indication, precie error mesage ? *)
     with 
-    | Out -> ()
     | Unknown_action -> 
         reject uuid (Js.string "Unknown action")
     | No_program -> 

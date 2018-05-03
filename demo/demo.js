@@ -24,7 +24,7 @@ var compilePromise = elp.compile([{
 }]);
 
 compilePromise.then(val =>{
-  log("info", "ElpiProm", val);
+  log("info", "ElpiProm", JSON.stringify(val, null, 4));
 }).catch(err => {
   log("error", "ElpiProm", err);
 });

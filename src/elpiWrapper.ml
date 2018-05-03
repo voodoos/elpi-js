@@ -70,6 +70,7 @@ let parse_and_compile files =
   (* We use a "dummy" query to do a first static check 
    * Elpi seems to need a query to do a static check *)
   ignore (prepare_query compiled_prog "js_dummy.");
+
   compiled_prog
 
 let load files = 

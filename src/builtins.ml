@@ -1,3 +1,5 @@
+let types = ref [||]
+
 let make () = 
     let open Elpi_API.Extend.BuiltInPredicate in
     builtin_of_declaration 
@@ -39,18 +41,21 @@ let make () =
               Easy "js_types LT sends the list of types LT to the OCaml worker (used during statick check).")),
           fun ln lt ~depth:_ -> 
             let open Elpi_API.Extend.Data in
-            let lt = List.map2 (fun n t -> 
+            let typs = List.rev_map2 (fun n t -> 
               let name = (match (Elpi_API.Extend.Data.look 0 n) with
                         | CData(c) -> Elpi_API.Extend.Data.C.to_string c
                         | _ -> failwith "Not a string") 
               in
-              Format.pp_print_string (Format.str_formatter) name;
-              Format.pp_print_string (Format.str_formatter) " ==> ";
-              Elpi_API.Extend.Pp.term 0 (Format.str_formatter) t;
-              Format.flush_str_formatter ()) ln lt
+              let typ = (match (Elpi_API.Extend.Data.look 0 t) with
+                        | CData(c) -> Elpi_API.Extend.Data.C.to_string c
+                        | _ -> failwith "Not a string") 
+              in 
+              object%js (self) (* Equivalent of this *)
+                val name = Js.string name
+                val type_ = Js.string typ
+              end) ln lt
             in
-            
-          Firebug.console##log (Js.array (Array.of_list lt))
+            types := Array.of_list typs
         ),
         DocAbove 
       )] @ Elpi_builtin.std_declarations)
