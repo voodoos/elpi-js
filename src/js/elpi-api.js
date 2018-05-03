@@ -132,8 +132,8 @@ class Elpi {
    * Sends some files for compilation to the Worker.
    * It returns a promise.
    * At the end of the execution the worker will resolve
-   * the promise with a status message. Or reject it with
-   * an error message.
+   * the promise with the list of declared types. 
+   * Or reject it with an error message.
    * 
    * @param {array({name: string, content: string})} files
    *   An array of files. Files are describded using two
