@@ -6,6 +6,12 @@ type assignement = {
   "ass": string,
 };
 
+type typ = {
+  .
+  "name": string,
+  "type": string,
+};
+
 type elpi = {
   .
   [@bs.meth]
@@ -17,7 +23,7 @@ type elpi = {
         "content": string,
       },
     ) =>
-    Js.Promise.t(string),
+    Js.Promise.t(array(typ)),
   [@bs.meth] "queryAll": string => Js.Promise.t(array(assignement)),
   [@bs.meth] "restart": unit => Js.Promise.t(string),
   "start": Js.Promise.t(string),
