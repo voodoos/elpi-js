@@ -43160,7 +43160,7 @@ j=ls(e[1]),h=1;else
 var
 h=0;if(!h)var
 j=cB(dua);var
-c=[0,{"name":i.toString(),"type":j.toString()},c],b=n,a=l;continue}var
+c=[0,{"name":i.toString(),"ty":j.toString()},c],b=n,a=l;continue}var
 f=0}else
 if(a)var
 f=0;else

@@ -52,7 +52,7 @@ let make () =
               in 
               object%js (self) (* Equivalent of this *)
                 val name = Js.string name
-                val type_ = Js.string typ
+                val ty = Js.string typ
               end) ln lt
             in
             types := Array.of_list typs
