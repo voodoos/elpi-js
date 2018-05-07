@@ -9,7 +9,7 @@ type assignement = {
 type typ = {
   .
   "name": string,
-  "type": string,
+  "typ": string,
 };
 
 type elpi = {
