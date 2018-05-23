@@ -37,7 +37,7 @@ let start () =
     header := Some(h);
  
     (*Elpi_API.Extend.BuiltInPredicate.document Format.std_formatter (Builtins.declarations @ Elpi_builtin.std_declarations);*)
-    
+
     (* TODO ElpiTODO : when not silent Elpi prints info on file already-loaded on stderr not stdout *)
     resolve "start" (Js.string "Elpi started.")
   with e -> (* TODO: wrong *)
@@ -62,12 +62,6 @@ let prepare_query prog query =
 let parse_and_compile files =
   let parsed_prog =  Elpi_API.Parse.program files in
   let compiled_prog = Elpi_API.Compile.program (get_header ()) [parsed_prog] in
-  (* TODO ElpiTODO : 
-  
-    Numerous errors from Elpi for all the externals in pervasives.elpi :
-    [Elpi] External new_safe not declared
-    ...
-  *)
 
   (* We use a "dummy" query to do a first static check 
    * Elpi seems to need a query to do a static check *)
