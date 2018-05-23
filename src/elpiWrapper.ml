@@ -35,7 +35,9 @@ let start () =
     let h, _ = Elpi_API.Setup.init [] ~builtins:(Builtins.make ()) ~basedir:"" ~silent:false in
     (* In Elpi_API 1.0 we need to keep that header to feed it to the compiler *)
     header := Some(h);
-
+ 
+    (*Elpi_API.Extend.BuiltInPredicate.document Format.std_formatter (Builtins.declarations @ Elpi_builtin.std_declarations);*)
+    
     (* TODO ElpiTODO : when not silent Elpi prints info on file already-loaded on stderr not stdout *)
     resolve "start" (Js.string "Elpi started.")
   with e -> (* TODO: wrong *)

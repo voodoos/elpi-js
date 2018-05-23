@@ -2,8 +2,8 @@ exception Elpi_error
 exception Unknown_action
 
 (** This file is the main program running Elpi. 
-  * It compiles to elpi-worker.js which is run as
-  * a web worker *)
+  * It compiles to elpi-worker.js which is run
+  * as a web worker *)
 
 (* The onmessage function is critical for a web worker *)
 let onMessage e = 
@@ -77,4 +77,4 @@ let () =
    * to be loaded in the pseudo-filesystem *)
   Log.debug "Starting Elpi...";
 
-  ElpiWrapper.start()
+  ElpiWrapper.start();
