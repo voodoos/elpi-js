@@ -59,18 +59,18 @@ let prepare_query prog query =
   (* We compile *)
   Elpi_API.Compile.link compiled_query
 
-let parse_and_compile files =
+let parse_and_compile files check =
   let parsed_prog =  Elpi_API.Parse.program files in
   let compiled_prog = Elpi_API.Compile.program (get_header ()) [parsed_prog] in
 
   (* We use a "dummy" query to do a first static check 
    * Elpi seems to need a query to do a static check *)
-  ignore (prepare_query compiled_prog "js_dummy.");
+  if check then ignore (prepare_query compiled_prog "js_dummy.");
 
   compiled_prog
 
-let load files = 
-  prog := Some(parse_and_compile files)
+let load files check = 
+  prog := Some(parse_and_compile files check)
 
 let query_once q =
   let prog = get_prog () in

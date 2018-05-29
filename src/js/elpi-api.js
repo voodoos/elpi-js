@@ -141,11 +141,14 @@ class Elpi {
    *   All files in the array will be compiled and ready
    * to be queried (if no errors where found)
    * 
+   * @param {bool=true} check
+   *   Shoudl Elpi perform a static-check or not ?
+   * 
    * @returns {Promise}
    */
-  compile(files) {
+  compile(files, check=true) {
     var uuid = generateUUID();
-    var message = { type: "compile", files, uuid };
+    var message = { type: "compile", files, check, uuid };
 
     return this.registerPromise(uuid, message)
   }

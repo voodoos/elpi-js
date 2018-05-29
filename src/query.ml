@@ -13,13 +13,13 @@ let answer assignments =
 
 (** The load function populate the pseudo filesystem
   * with the users files and ask Elpi to compile them *)
-  let load files =
+  let load files check =
     let filenames = 
       Array.to_list (Array.map (fun (name, content) ->
         Sys_js.update_file name content; (* Populating *)
         name) files) 
     in
-    try ElpiWrapper.load filenames
+    try ElpiWrapper.load filenames check
     with 
     | ElpiWrapper.StaticCheck_failed -> raise ElpiWrapper.StaticCheck_failed
     | e -> Log.error (Printexc.to_string e); raise Elpi_error

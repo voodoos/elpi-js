@@ -21,7 +21,7 @@ elp.start.then(val => {
 var compilePromise = elp.compile([{
   name: "toto.elpi",
   content: 'world "hello". world "world".'
-}]);
+}], true);
 
 compilePromise.then(val =>{
   log("info", "ElpiProm", JSON.stringify(val, null, 4));

@@ -21,14 +21,14 @@ let onMessage e =
   try 
     match action with
     | "compile" -> 
-      Query.load(jsPairStringArrayToML e##.files);
+      Query.load (jsPairStringArrayToML e##.files) (Js.to_bool e##.check);
       resolve uuid (Js.array !Builtins.types)
       (*Log.status "compile" Log.Finished ~details:"Files loaded"*)
     | "queryOnce" -> 
       let answer = Query.queryOnce(Js.to_string e##.code) in
       resolve uuid (ToJs.arrayOfAssignements answer)
       (*Log.status "query" Log.Finished ~details:"End of query."*)
-    | "queryAll" -> 
+    | "queryAll" ->  
       let answers = Query.queryAll(Js.to_string e##.code) in
       resolve uuid (ToJs.list (List.map (ToJs.arrayOfAssignements) answers))
       (*Log.status "query" Log.Finished ~details:"End of query."*)
