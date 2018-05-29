@@ -24,7 +24,7 @@ type elpi = {
           "content": string,
         },
       ),
-      Js.boolean
+      bool
     ) =>
     Js.Promise.t(array(typ)),
   [@bs.meth] "queryAll": string => Js.Promise.t(array(assignement)),
