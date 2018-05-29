@@ -48,7 +48,6 @@ let answer assignments =
       ElpiWrapper.query_loop q (fun () -> true
       (* TODO : not satifying, we want to ask user !
        * But complcated, three options :
-       *  - Lwt ? (subtil, best)
        *  - Elpi hack (easy, costly) (running loop twice for second result etc..)
        *  - A different Elpy query function : start, next, end *)
       ) (loop_answer);
