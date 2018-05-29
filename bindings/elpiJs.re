@@ -16,12 +16,15 @@ type elpi = {
   .
   [@bs.meth]
   "compile":
-    array(
-      {
-        .
-        "name": string,
-        "content": string,
-      },
+    (
+      array(
+        {
+          .
+          "name": string,
+          "content": string,
+        },
+      ),
+      Js.boolean
     ) =>
     Js.Promise.t(array(typ)),
   [@bs.meth] "queryAll": string => Js.Promise.t(array(assignement)),
@@ -53,7 +56,7 @@ external create :
    (arg, ass) => { Js.log(arg); Js.log(ass) },
  );
 
- elpi##compile([|{ "name":"toto.elpi", "content":"hello \"world\"." }|]);
+ elpi##compile([|{ "name":"toto.elpi", "content":"hello \"world\"." }|], Js.true_);
  elpi##queryAll("hello A.");
 
  */
