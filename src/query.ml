@@ -1,5 +1,6 @@
-exception Elpi_error
+open Js_of_ocaml
 
+exception Elpi_error
 
 let answer assignments =
   let open Js in
@@ -16,7 +17,7 @@ let answer assignments =
   let load files check =
     let filenames = 
       Array.to_list (Array.map (fun (name, content) ->
-        Sys_js.update_file name content; (* Populating *)
+        Sys_js.update_file ~name ~content; (* Populating *)
         name) files) 
     in
     try ElpiWrapper.load filenames check
@@ -26,7 +27,7 @@ let answer assignments =
   
   let queryOnce q = 
     try 
-      let sol : Elpi_API.Data.solution = ElpiWrapper.query_once q in
+      let sol : unit Elpi.API.Data.solution = ElpiWrapper.query_once q in
       let assignments = StringTools.list_of_sol sol in
       answer assignments;
       assignments
@@ -34,7 +35,7 @@ let answer assignments =
   
   let queryAll q = 
     let res = ref [] in
-    let loop_answer f (out : Elpi_API.Execute.outcome) =
+    let loop_answer _f (out : unit Elpi.API.Execute.outcome) =
       (* print_string ("\nIter "^ (string_of_float f) ^ ":\n");*)
       match out with
       | Success(sol) -> 
@@ -53,4 +54,3 @@ let answer assignments =
       ) (loop_answer);
       !res
     with ElpiWrapper.No_program -> raise ElpiWrapper.No_program
-  

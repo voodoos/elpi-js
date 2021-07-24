@@ -1,4 +1,4 @@
-open Js
+open Js_of_ocaml
 
 let list t = Js.array (Array.of_list t)
 let arrayOfAssignements ?fl:(fl=Js.string) ?fr:(fr=Js.string) asss =

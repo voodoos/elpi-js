@@ -2,6 +2,8 @@
   * The debugging val acts as a flag 
   * to show or not dev-level messages *)
 
+open Js_of_ocaml
+
 let debugging = true
 
 type level =

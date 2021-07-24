@@ -2,7 +2,9 @@ let types = ref [||]
 
         
 let declarations =
-let open Elpi_API.Extend.BuiltInPredicate in
+
+let open Elpi.API.BuiltIn in
+let open Elpi.API.BuiltInData in
  [MLCode(
         Pred("js_dummy",
           Easy "js_dummy is a dummy pred for dummy purposes (type-check at compile time).",
@@ -40,11 +42,10 @@ let open Elpi_API.Extend.BuiltInPredicate in
             In(list string, "LT", 
               Easy "js_types LN LT sends the list of types LT to the OCaml worker (used during static check).")),
           fun ln lt ~depth:_ -> 
-            let open Elpi_API.Extend.Data in
             let typs = List.rev_map2 (fun n t -> 
               object%js (self) (* Equivalent of this *)
-                val name = Js.string n
-                val ty = Js.string t
+                val name = Js_of_ocaml.Js.string n
+                val ty = Js_of_ocaml.Js.string t
               end) ln lt
             in
             types := Array.of_list typs
@@ -53,5 +54,6 @@ let open Elpi_API.Extend.BuiltInPredicate in
       )]
 
 let make () = 
-    Elpi_API.Extend.BuiltInPredicate.builtin_of_declaration 
-      (declarations @ Elpi_builtin.std_declarations)
+    Elpi.API.BuiltIn.declare 
+      ~file_name:"builtins.elpi"
+      (declarations @ Elpi.Builtin.std_declarations)

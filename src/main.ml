@@ -1,3 +1,5 @@
+open Js_of_ocaml
+
 exception Elpi_error
 exception Unknown_action
 
@@ -65,11 +67,11 @@ let () =
   Sys_js.set_channel_flusher stderr (Log.error ~prefix:"stderr");
 
   (* Configuring Elpi outputs *)
-  let open Elpi_API.Setup in begin
-    set_warn (Log.warning ~prefix:"Elpi");
-    set_error (Log.error ~prefix:"Elpi");
-    set_anomaly (Log.warning ~prefix:"Elpi");
-    set_type_error (Log.error ~prefix:"Elpi")
+  let open Elpi.API.Setup in begin
+    set_warn (fun ?loc:_ -> Log.warning ~prefix:"Elpi");
+    set_error (fun ?loc:_ -> Log.error ~prefix:"Elpi");
+    set_anomaly (fun ?loc:_ -> Log.warning ~prefix:"Elpi");
+    set_type_error (fun ?loc:_ -> Log.error ~prefix:"Elpi")
   end;
   
   (** Initializing ELpi 

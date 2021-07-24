@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import base64
 
-output = "type file = { name: string; text: string }"
+output = "\ntype file = { name: string; text: string }"
 output += "\nlet files = ["
 
 directory = os.fsencode("data/")
@@ -28,5 +28,5 @@ for path in pathlist:
     first = False
 
 output += "]"
-output += "\n let load () = List.iter (fun f -> Sys_js.create_file f.name (B64.decode f.text)) files"
+output += "\n let load () = List.iter (fun f -> Js_of_ocaml.Sys_js.create_file ~name:f.name ~content:(Base64.decode_exn f.text)) files"
 print(output)

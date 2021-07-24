@@ -18,50 +18,53 @@ let get_header () =
 
 (* Callback handling is a bit tricky : messages cannot
  * carry functions so we use unique ids *)
-let sendCallbackOrder ?b:(b=true) (payload: 'a Js.t) uuid  =
-  let open Js in
+let sendCallbackOrder ?b:(b=true) (payload: 'a Js_of_ocaml.Js.t) uuid  =
+  let open Js_of_ocaml.Js in
   let message = object%js (self) (* Equivalent of this *)
     val type_ = string (if b then "resolve" else "reject")
     val uuid = string uuid
     val value = payload
   end in
-  Worker.post_message(message)
+  Js_of_ocaml.Worker.post_message(message)
 
 let resolve uuid value  = sendCallbackOrder value uuid
 let reject uuid err  = sendCallbackOrder ~b:false err uuid
 
 let start () =
   try 
-    let h, _ = Elpi_API.Setup.init [] ~builtins:(Builtins.make ()) ~basedir:"" ~silent:false in
+    let h, _ = Elpi.API.Setup.init [] ~builtins:[Builtins.make ()] ~basedir:"" in
     (* In Elpi_API 1.0 we need to keep that header to feed it to the compiler *)
     header := Some(h);
  
     (*Elpi_API.Extend.BuiltInPredicate.document Format.std_formatter (Builtins.declarations @ Elpi_builtin.std_declarations);*)
 
     (* TODO ElpiTODO : when not silent Elpi prints info on file already-loaded on stderr not stdout *)
-    resolve "start" (Js.string "Elpi started.")
+    resolve "start" (Js_of_ocaml.Js.string "Elpi started.")
   with e -> (* TODO: wrong *)
       (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
           but we can't catch them without a catch all clause... *)
-      reject "start" (Js.string (Printexc.to_string e))
+      reject "start" (Js_of_ocaml.Js.string (Printexc.to_string e))
 
 (* Parsing and compiling query *)
 let prepare_query prog query =
-  let parsed_query = Elpi_API.Parse.goal query in
-  let compiled_query = Elpi_API.Compile.query prog parsed_query in
+  let parsed_query = 
+    Elpi.API.(Parse.goal (Ast.Loc.initial "") query) in
+  let compiled_query = Elpi.API.Compile.query prog parsed_query in
   
   (* We run Elpi's statick checks *)
-  if (not (Elpi_API.Compile.static_check 
-          (get_header ())
+  (* if (not (Elpi.API.Compile.static_check 
+          ~checker:(get_header ())
           compiled_query)) 
     (* TODO ElpiTODO : output done on sdout, should use Warning / errors *)
-    then  raise StaticCheck_failed; 
+    then  raise StaticCheck_failed;  *)
   (* We compile *)
-  Elpi_API.Compile.link compiled_query
+  Elpi.API.Compile.optimize compiled_query
 
 let parse_and_compile files check =
-  let parsed_prog =  Elpi_API.Parse.program files in
-  let compiled_prog = Elpi_API.Compile.program (get_header ()) [parsed_prog] in
+  let elpi = get_header () in
+  let parsed_prog =  Elpi.API.Parse.program ~elpi files in
+  let compiled_prog = 
+    Elpi.API.Compile.program ~elpi [parsed_prog] in
 
   (* We use a "dummy" query to do a first static check 
    * Elpi seems to need a query to do a static check *)
@@ -76,7 +79,7 @@ let query_once q =
   let prog = get_prog () in
   let executable = prepare_query prog q in
 
-  match (Elpi_API.Execute.once executable) with
+  match (Elpi.API.Execute.once executable) with
     Success(data) -> data
     | Failure -> raise Query_failed
     | NoMoreSteps -> raise Query_failed
@@ -86,7 +89,6 @@ let query_loop q more each =
   let prog = get_prog () in
   let executable = prepare_query prog q in
 
-  Elpi_API.Execute.loop executable
-                        more
-                        each
-  
+  Elpi.API.Execute.loop executable
+                        ~more
+                        ~pp:each
