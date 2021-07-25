@@ -43,12 +43,14 @@ class Elpi {
    *       The assignements of the args
    *  The callback used when the Worker gives an answer
    * 
+   * @string workerScript
    */
-  constructor(loggerCB, answerCB) {
+  constructor(loggerCB, answerCB, workerScript) {
     this.worker = null;
 
     this.logger = loggerCB;
     this.answer = answerCB;
+    this.workerScript = workerScript;
 
     /* We cannot send directly callbacks to the worker
      * because functions are not clonable.
@@ -105,7 +107,7 @@ class Elpi {
    * @returns {Promise}
    */
   startElpi() {
-    this.worker = new Worker("elpi-worker.js");
+    this.worker = new Worker(this.workerScript);
     this.worker.onmessage = this.onmessage;
 
     var that = this;

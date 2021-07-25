@@ -1,4 +1,4 @@
-import Elpi from "./elpi-api.js";
+import Elpi from "./share/elpi-js/elpi-api.js";
 
 function log(l, p, t) {
   console.log(l, p, t);
@@ -12,7 +12,7 @@ function answer(vals) {
   log("answer", "", JSON.stringify(vals, null, 4));
 }
 
-const elp = new Elpi(log, answer);
+const elp = new Elpi(log, answer, "./share/elpi-js/elpi-worker.bc.js");
 
 elp.start.then(val => { 
   log("info", "ElpiProm", "toto"); 
@@ -53,5 +53,3 @@ elp.queryAll("world A B.").then(val => {
     log("error", "ElpiProm", err);
   });
 });
-
-
