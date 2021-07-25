@@ -49,7 +49,7 @@ jobs:
           # Build directory to deploy
           build_dir: dist
           # Allow Jekyll to build your site
-          jekyll: true
+          jekyll: false
           # Enable verbose output
           verbose: false
         env:
