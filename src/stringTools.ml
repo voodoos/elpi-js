@@ -25,38 +25,42 @@ let string_list_of_args sm =
 
 let string_list_of_assignements ~pp_ctx ass =
   let bindings = Elpi.API.Data.StrMap.bindings ass in
-  List.map (fun (arg, term) -> 
-      Elpi.API.Pp.term  pp_ctx (Format.str_formatter) term;
+  List.map
+    (fun (arg, term) ->
+      Elpi.API.Pp.term pp_ctx Format.str_formatter term;
       let str = Format.flush_str_formatter () in
-      arg, str) bindings
+      (arg, str))
+    bindings
 
 let string_of_assignments ~pp_ctx ass =
   Elpi.API.Data.StrMap.fold
     (fun name term acc ->
-      Elpi.API.Pp.term pp_ctx (Format.str_formatter) term;
+      Elpi.API.Pp.term pp_ctx Format.str_formatter term;
       let str = Format.flush_str_formatter () in
-       String.concat "" [acc; name; " := "; str])
-ass ""
+      String.concat "" [ acc; name; " := "; str ])
+    ass ""
 
 let string_of_constraints ~pp_ctx cons =
-  Elpi.API.Pp.constraints pp_ctx (Format.str_formatter) cons;
+  Elpi.API.Pp.constraints pp_ctx Format.str_formatter cons;
   Format.flush_str_formatter ()
-                             
+
 let string_of_sol (s : unit Elpi.API.Data.solution) =
   let pp_ctx = s.pp_ctx in
-  String.concat "" [
-  "Assignments : "; (string_of_assignments ~pp_ctx (s.assignments))
-  ; "\nConstraints : "; (string_of_constraints ~pp_ctx (s.constraints))
-  ; "\n"
-  ]
+  String.concat ""
+    [
+      "Assignments : ";
+      string_of_assignments ~pp_ctx s.assignments;
+      "\nConstraints : ";
+      string_of_constraints ~pp_ctx s.constraints;
+      "\n";
+    ]
 
 let list_of_sol (sol : unit Elpi.API.Data.solution) =
-  let assignments : (string * string) list = 
-    string_list_of_assignements 
-      ~pp_ctx:sol.pp_ctx
-      sol.assignments in
+  let assignments : (string * string) list =
+    string_list_of_assignements ~pp_ctx:sol.pp_ctx sol.assignments
+  in
   assignments
-  
+
 (* type arrow typ -> typ -> typ.
 type tconst string -> typ.
 type tapp list typ -> typ.

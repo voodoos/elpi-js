@@ -10,6 +10,6 @@
 
 (install
  (section share)
- (files 
+ (files
   (main.bc.js as elpi-worker.bc.js)
-   js/elpi-api.js))
+  js/elpi-api.js))
