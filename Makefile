@@ -1,10 +1,10 @@
-dist: _build/default/src/main.bc.js
+dist: release-build
 	dune install --prefix=dist
 
-_build/default/src/main.bc.js:
+release-build:
 	dune build -p elpi-js
 
 clean:
 	dune clean
 
-.PHONY: dist clean
+.PHONY: dist clean release-build
