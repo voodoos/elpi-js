@@ -10,4 +10,7 @@ dev:
 clean:
 	dune clean
 
-.PHONY: dist clean release-build
+fmt:
+	dune build @fmt --auto-promote
+
+.PHONY: dist clean release-build fmt dev
