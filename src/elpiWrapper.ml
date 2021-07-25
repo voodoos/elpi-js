@@ -32,7 +32,15 @@ let reject uuid err  = sendCallbackOrder ~b:false err uuid
 
 let start () =
   try 
-    let h, _ = Elpi.API.Setup.init [] ~builtins:[Builtins.make ()] ~basedir:"" in
+    let flags =
+      let open Elpi.API.Compile in
+      {
+        default_flags with
+        print_passes = false;
+        print_units = true;
+      } |> to_setup_flags
+    in
+    let h, _ = Elpi.API.Setup.init ~flags ~builtins:[Builtins.make ()] ~basedir:"" [] in
     (* In Elpi_API 1.0 we need to keep that header to feed it to the compiler *)
     header := Some(h);
  
@@ -41,9 +49,9 @@ let start () =
     (* TODO ElpiTODO : when not silent Elpi prints info on file already-loaded on stderr not stdout *)
     resolve "start" (Js_of_ocaml.Js.string "Elpi started.")
   with e -> (* TODO: wrong *)
-      (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
-          but we can't catch them without a catch all clause... *)
-      reject "start" (Js_of_ocaml.Js.string (Printexc.to_string e))
+    (* TODO ElpiTODO : Elpi raise various exceptions on file not found for exemple, 
+        but we can't catch them without a catch all clause... *)
+    reject "start" (Js_of_ocaml.Js.string (Printexc.to_string e))
 
 (* Parsing and compiling query *)
 let prepare_query prog query =
