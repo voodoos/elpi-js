@@ -4,6 +4,9 @@ dist: release-build
 release-build:
 	dune build -p elpi-js
 
+dev:
+	dune build
+
 clean:
 	dune clean
 
