@@ -1,6 +1,11 @@
 # emacs
 *~
 
+# build artefact
+dist/doc
+dist/lib
+dist/share
+
 # jBuilder
 _build/
 *.install
