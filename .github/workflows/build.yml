@@ -29,8 +29,10 @@ jobs:
         uses: ocaml/setup-ocaml@v1
         with:
           ocaml-version: 4.12.0
+      
+      - name: Install dependencies
+        run: opam install . --deps-only --yes
 
-      # Runs a set of commands using the runners shell
       - name: Build release binaries
         run: make dist
       
