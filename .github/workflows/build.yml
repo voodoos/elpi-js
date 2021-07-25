@@ -24,6 +24,13 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.opam
+          # An explicit key for restoring and saving the cache
+          key: ${{ matrix.os }}-${{ matrix.ocaml-version }}-${{ hashFiles('*.opam') }}-build
 
       - name: Set up OCaml
         uses: ocaml/setup-ocaml@v1
@@ -34,7 +41,7 @@ jobs:
         run: opam install . --deps-only --yes
 
       - name: Build release binaries
-        run: make dist
+        run: opam exec -- make dist
       
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2
