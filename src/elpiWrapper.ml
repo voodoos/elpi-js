@@ -52,11 +52,11 @@ let prepare_query prog query =
   let compiled_query = Elpi.API.Compile.query prog parsed_query in
   
   (* We run Elpi's statick checks *)
-  (* if (not (Elpi.API.Compile.static_check 
-          ~checker:(get_header ())
+  if (not (Elpi.API.Compile.static_check 
+          ~checker:(Elpi.Builtin.default_checker ())
           compiled_query)) 
     (* TODO ElpiTODO : output done on sdout, should use Warning / errors *)
-    then  raise StaticCheck_failed;  *)
+    then  raise StaticCheck_failed; 
   (* We compile *)
   Elpi.API.Compile.optimize compiled_query
 
