@@ -4,21 +4,31 @@
 <head>
     <meta charset="utf-8">
     <title>Hello Elpi</title>
+    <link rel="stylesheet" data-name="vs/editor/editor.main"
+        href="../node_modules/monaco-editor/min/vs/editor/editor.main.css" />
 </head>
 
 <body>
     <h1>Hello Elpi</h1>
+    <div id="editor" style="width: 800px; height: 300px; border: 1px solid
+    grey"></div>
+
+    <input type="button" id="build" value="Compile" disabled />
+    <input type="button" id="restart" value="Restart Elpi" disabled />
+    <input type="text" value="world A." id="query_text" />
+    <input type="button" value="Query" id="query" disabled />
     <div id="console"></div>
 
-    <script src="share/elpi-js/elpi-worker.bc.js" type="module"></script>
-    <script src="demo.js" type="module"></script>
-    <script nomodule>
-        let child = document.createElement("div");
-        child.innerHTML = "Your browser does not support Javascript <b>modules</b>. Please use an up-to-date version of Firefox, Opera, Safari, Edge or Chrome."
-            + "<br/> If you use Firefox, please make sure to enable <b>dom.moduleScripts.enabled</b> in about:config.";
-        document.getElementById("console")
-            .appendChild(child)
+    <script>
+        var require = {
+            paths: {
+                vs: '../node_modules/monaco-editor/min/vs',
+            }
+        };
     </script>
+    <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
+
+    <script src="demo.js" type="module"></script>
 </body>
 
 </html>

@@ -9,5 +9,8 @@
   "private": false,
   "scripts": {
     "prepublish": "make lib"
+  },
+  "dependencies": {
+    "monaco-editor": "^0.26.1"
   }
 }
