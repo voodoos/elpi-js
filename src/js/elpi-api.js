@@ -67,6 +67,8 @@ class Elpi {
     /* Message from the Elpi worker are 
     treated by the following function */
     this.onmessage = function (event) {
+      console.log("info", "Elpi", "Message received from worker:",  event);
+
       var d = event.data;
       switch (d.type) {
         case "answer":
@@ -149,8 +151,8 @@ class Elpi {
    * @returns {Promise}
    */
   compile(files, check=true) {
-    var uuid = generateUUID();
-    var message = { type: "compile", files, check, uuid };
+    const uuid = generateUUID();
+    const message = { type: "compile", files, check, uuid };
 
     return this.registerPromise(uuid, message)
   }
@@ -171,10 +173,15 @@ class Elpi {
    * @returns {Promise}
    */
   queryAll(code) {
-    var uuid = generateUUID();
-    var message = { type: "queryAll", code, uuid };
+    const uuid = generateUUID();
+    const message = { type: "queryAll", code, uuid };
 
     return this.registerPromise(uuid, message)
+  }
+
+  more() {
+    const message = { type: "more" };
+    this.worker.postMessage(message);
   }
 
   /**
