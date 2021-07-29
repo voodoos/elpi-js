@@ -1,7 +1,7 @@
 (executable
  (modes js)
  (name main)
- (libraries js_of_ocaml js_of_ocaml-ppx elpi base64)
+ (libraries js_of_ocaml-ppx elpi base64)
  (js_of_ocaml
   (flags :standard +dynlink.js +toplevel.js))
  (preprocess
