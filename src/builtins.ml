@@ -53,30 +53,31 @@ let declarations =
         DocAbove );
     MLCode
       ( Pred
-          ( "js_types",
+          ( "js_names",
             In
               ( list string,
                 "LN",
+                    Easy
+                      "js_names LN LT sends the list of types LT to the OCaml \
+                       worker (used during static check)." ),
+            fun ln ~depth:_ ->
+              types := Array.of_list ln
+              ),
+        DocAbove );
+        MLCode
+          ( Pred
+              ( "js_type",
                 In
                   ( list string,
-                    "LT",
-                    Easy
-                      "js_types LN LT sends the list of types LT to the OCaml \
-                       worker (used during static check)." ) ),
-            fun ln lt ~depth:_ ->
-              let typs =
-                List.rev_map2
-                  (fun n t ->
-                    object%js (self)
-                      (* Equivalent of this *)
-                      val name = Js_of_ocaml.Js.string n
-
-                      val ty = Js_of_ocaml.Js.string t
-                    end)
-                  ln lt
-              in
-              types := Array.of_list typs ),
-        DocAbove );
+                    "LN",
+                        Easy
+                          "js_type" ),
+                fun l ~depth:_ -> match l with
+                | name::typ::[] when Array.mem name !types ->
+                  Format.eprintf "Type: %s %s\n%!" name typ;
+                | _ -> ()
+                  ),
+            DocAbove );
   ]
 
 let make () =

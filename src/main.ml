@@ -18,22 +18,20 @@ let onMessage e =
 
   let open ElpiWrapper in
   let action = Js.to_string e##.type_
-  and uuid = e##.uuid in
+  and uuid = Js.to_string e##.uuid in
 
   try 
     match action with
-    | "compile" -> 
+    | "compile" ->
       Query.load (jsPairStringArrayToML e##.files) (Js.to_bool e##.check);
-      resolve uuid (Js.array !Builtins.types)
-      (*Log.status "compile" Log.Finished ~details:"Files loaded"*)
+      let types = Js.array (Array.map Js.string!Builtins.types ) in
+      resolve uuid types
     | "queryOnce" -> 
       let answer = Query.queryOnce(Js.to_string e##.code) in
       resolve uuid (ToJs.arrayOfAssignements answer)
-      (*Log.status "query" Log.Finished ~details:"End of query."*)
     | "queryAll" ->  
       let answers = Query.queryAll(Js.to_string e##.code) in
       resolve uuid (ToJs.list (List.map (ToJs.arrayOfAssignements) answers))
-      (*Log.status "query" Log.Finished ~details:"End of query."*)
     | _ -> raise Unknown_action
   
   (* TODO ElpiTODO : Elpi raises various exceptions on file not found for exemple, 
@@ -46,6 +44,8 @@ let onMessage e =
         reject uuid (Js.string "No program to query.")
     | Query_failed ->
         reject uuid (Js.string "Query failed.")
+    | StaticCheck_failed -> 
+        reject uuid (Js.string "Static check failed, cancelling.")
     | ex ->
         let mess = (Printexc.to_string ex) in
         reject uuid (Js.string  mess)
@@ -68,10 +68,10 @@ let () =
 
   (* Configuring Elpi outputs *)
   let open Elpi.API.Setup in begin
-    set_warn (fun ?loc:_ -> Log.warning ~prefix:"Elpi");
-    set_error (fun ?loc:_ -> Log.error ~prefix:"Elpi");
-    set_anomaly (fun ?loc:_ -> Log.warning ~prefix:"Elpi");
-    set_type_error (fun ?loc:_ -> Log.error ~prefix:"Elpi")
+    set_warn (fun ?loc:_ s -> Log.warning s);
+    set_error (fun ?loc:_ s -> Log.error s);
+    set_anomaly (fun ?loc:_ s -> Log.warning s);
+    set_type_error (fun ?loc:_ s -> Log.error s)
   end;
   
   (** Initializing ELpi 

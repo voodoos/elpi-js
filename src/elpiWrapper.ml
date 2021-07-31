@@ -1,14 +1,19 @@
 exception No_program
 
+exception No_checker
+
 exception StaticCheck_failed
 
 exception Query_failed
 
 let header = ref None
 
+let checker = ref None
+
 let prog = ref None
 
 let get_prog () = match !prog with None -> raise No_program | Some p -> p
+let get_checker() = match !checker with None -> raise No_checker| Some p -> p
 
 let get_header () = match !header with None -> raise No_program | Some h -> h
 
@@ -36,14 +41,20 @@ let start () =
   try
     let flags =
       let open Elpi.API.Compile in
-      { default_flags with print_passes = false; print_units = true }
+      { default_flags with print_passes = false; print_units = false }
       |> to_setup_flags
     in
     let h, _ =
       Elpi.API.Setup.init ~flags ~builtins:[ Builtins.make () ] ~basedir:"" []
     in
-    (* In Elpi_API 1.0 we need to keep that header to feed it to the compiler *)
     header := Some h;
+    let checker_ = 
+      let elpi = get_header () in
+      let parsed_prog = Elpi.API.Parse.program ~elpi ["elpi-checker.elpi"] in
+      Elpi.API.Compile.program ~elpi [ parsed_prog ]
+    in
+    (* In Elpi_API 1.0 we need to keep that header to feed it to the compiler *)
+    checker := Some checker_;
 
     (*Elpi_API.Extend.BuiltInPredicate.document Format.std_formatter (Builtins.declarations @ Elpi_builtin.std_declarations);*)
 
@@ -60,11 +71,11 @@ let prepare_query prog query =
   let parsed_query = Elpi.API.(Parse.goal (Ast.Loc.initial "") query) in
   let compiled_query = Elpi.API.Compile.query prog parsed_query in
 
-  (* We run Elpi's statick checks *)
+  (* We run Elpi's static checks *)
   if
     not
       (Elpi.API.Compile.static_check
-         ~checker:(Elpi.Builtin.default_checker ())
+         ~checker:(get_checker ())
          compiled_query)
     (* TODO ElpiTODO : output done on sdout, should use Warning / errors *)
   then raise StaticCheck_failed;

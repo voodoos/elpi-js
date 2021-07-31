@@ -35,13 +35,13 @@ let log ?(lvl = Info) ?(prefix = "") text =
     in
     Worker.post_message message
 
-let debug ?(prefix = "") text = log ~lvl:Debug ~prefix text
+let debug ?(prefix = "worker") text = log ~lvl:Debug ~prefix text
 
-let info ?(prefix = "") text = log ~lvl:Info ~prefix text
+let info ?(prefix = "worker") text = log ~lvl:Info ~prefix text
 
-let warning ?(prefix = "") text = log ~lvl:Warning ~prefix text
+let warning ?(prefix = "worker") text = log ~lvl:Warning ~prefix text
 
-let error ?(prefix = "") text = log ~lvl:Error ~prefix text
+let error ?(prefix = "worker") text = log ~lvl:Error ~prefix text
 
 type state = Started | Running | Finished
 
