@@ -84,7 +84,8 @@ require(['vs/editor/editor.main'], function () {
 
   const editor = monaco.editor.create(container, {
     value: example,
-    language: 'lprolog'
+    language: 'lprolog',
+    minimap: { enabled: false }
   });
 
   // Automatically resize editor
