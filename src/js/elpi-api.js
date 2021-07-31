@@ -67,7 +67,7 @@ class Elpi {
     /* Message from the Elpi worker are 
     treated by the following function */
     this.onmessage = function (event) {
-      console.log("info", "Elpi", "Message received from worker:",  event);
+      console.log("info", "Elpi", "Message received from worker:",  event.data);
 
       var d = event.data;
       switch (d.type) {
@@ -177,11 +177,6 @@ class Elpi {
     const message = { type: "queryAll", code, uuid };
 
     return this.registerPromise(uuid, message)
-  }
-
-  more() {
-    const message = { type: "more" };
-    this.worker.postMessage(message);
   }
 
   /**
