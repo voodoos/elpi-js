@@ -43,6 +43,9 @@ jobs:
       - name: Build release binaries
         run: opam exec -- make dist
       
+      - name: Get node modules
+        run: cd dist && yarn 
+      
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2
         with:
