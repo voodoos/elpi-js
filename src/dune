@@ -11,7 +11,6 @@
 (rule
  (alias pack_data)
  (deps (source_tree data) pack_data.py)
- ;(targets data.ml)
  (action (with-stdout-to "data.ml" (run python pack_data.py))))
 
 (install
