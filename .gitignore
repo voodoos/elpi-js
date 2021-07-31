@@ -20,4 +20,3 @@ _build/
 
 # yarn
 node_modules
-yarn.lock
