@@ -1,16 +1,22 @@
 {
   "name": "elpi-js",
   "version": "0.1.0",
-  "main": "lib/elpi-api.js",
+  "main": "index.html",
   "description": "A javascript toolset for the Elpi lambda-prolog interpreter.",
   "repository": "git@github.com:voodoos/elpi-js.git",
   "author": "VooDooS <thevoodoos@gmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {
-    "prepublish": "make lib"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
   },
   "dependencies": {
-    "monaco-editor": "^0.26.1"
+    "@codemirror/basic-setup": "^0.18.2",
+    "@codemirror/stream-parser": "^0.18.2"
+  },
+  "devDependencies": {
+    "vite": "^2.4.4"
   }
 }
