@@ -1,7 +1,6 @@
 import Elpi from "./share/elpi-js/elpi-api.js";
 import { EditorState, EditorView, basicSetup } from "@codemirror/basic-setup"
 import { StreamLanguage } from "@codemirror/stream-parser"
-import { syntaxTree, getIndentation, Language } from "@codemirror/language"
 
 const example = `type mappred (A -> B -> prop) -> list A -> list B -> prop.
 
