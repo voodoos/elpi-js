@@ -44,13 +44,13 @@ jobs:
         run: opam exec -- make dist
       
       - name: Get node modules
-        run: cd dist && yarn 
+        run: cd demo && yarn && yarn build
       
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v2
         with:
           # Build directory to deploy
-          build_dir: dist
+          build_dir: demo/dist
           # Allow Jekyll to build your site
           jekyll: false
           # Enable verbose output
