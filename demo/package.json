@@ -9,7 +9,7 @@
   "private": false,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --base=/elpi-js/",
     "serve": "vite preview"
   },
   "dependencies": {
