@@ -152,7 +152,7 @@ window.onresize = function () {
 };
 
 // We start Elpi
-const elp = new Elpi(log, answer, "./share/elpi-js/elpi-worker.bc.js");
+const elp = new Elpi(log, answer, "./elpi-worker.bc.js");
 
 const on_start = _val => {
   log("info", "demo", "Elpi started");

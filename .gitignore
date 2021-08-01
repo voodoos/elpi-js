@@ -2,9 +2,10 @@
 *~
 
 # build artefact
-dist/doc
-dist/lib
-dist/share
+demo/doc
+demo/lib
+demo/share
+demo/dist
 
 # jBuilder
 _build/
