@@ -1,5 +1,7 @@
 import Elpi from "./share/elpi-js/elpi-api.js";
-import tokenizer from "./lprolog.js";
+import { EditorState, EditorView, basicSetup } from "@codemirror/basic-setup"
+import { StreamLanguage } from "@codemirror/stream-parser"
+import { syntaxTree, getIndentation, Language } from "@codemirror/language"
 
 const example = `type mappred (A -> B -> prop) -> list A -> list B -> prop.
 
@@ -69,71 +71,125 @@ function answer(vals) {
   }
 }
 
-require(['vs/editor/editor.main'], function () {
-  const container = document.getElementById('editor');
-  const build_btn = document.getElementById('build');
-  const restart_btn = document.getElementById('restart');
-  const query_btn = document.getElementById('query');
-  const query_text = document.getElementById('query_text');
+const container = document.getElementById('editor');
+const build_btn = document.getElementById('build');
+const restart_btn = document.getElementById('restart');
+const query_btn = document.getElementById('query');
+const query_text = document.getElementById('query_text');
 
-  monaco.languages.register({ id: "lprolog" });
-  monaco.languages.setMonarchTokensProvider(
-    'lprolog',
-    tokenizer
-  )
 
-  const editor = monaco.editor.create(container, {
-    value: example,
-    language: 'lprolog',
-    minimap: { enabled: false }
-  });
+let startStates = 0
+let keywords =
+  ["module",
+    "sig",
+    "import",
+    "shorten",
+    "accum_sig",
+    "use_sig",
+    "local",
+    "pred",
+    "prop",
+    "mode",
+    "macro",
+    "rule",
+    "namespace",
+    "constraint",
+    "localkind",
+    "useonly",
+    "exportdef",
+    "kind",
+    "typeabbrev",
+    "type",
+    "external",
+    "closed",
+    "end",
+    "accumulate",
+    "infixl",
+    "infixr",
+    "infix",
+    "prefix",
+    "prefixr",
+    "postfix",
+    "postfixl"]
 
-  // Automatically resize editor
-  var doit;
-  window.onresize = function () {
-    clearTimeout(doit);
-    doit = setTimeout(() => editor.layout(), 100);
-  };
 
-  // We start Elpi
-  const elp = new Elpi(log, answer, "./share/elpi-js/elpi-worker.bc.js");
+const language = StreamLanguage.define({
+  startState() {
+    startStates++
+    return { count: 0 }
+  },
 
-  const on_start = _val => {
-    log("info", "demo", "Elpi started");
-    build_btn.removeAttribute('disabled');
-    restart_btn.removeAttribute('disabled');
-  };
+  token(stream, _state) {
+    if (stream.eatSpace()) return null
+    if (stream.match(/^%.*/)) return "lineComment"
+    if (stream.match(/^"[^"]*"/)) return "string"
+    if (stream.match(/^\d+/)) return "number"
+    if (stream.match(/^\w+/)) return keywords.indexOf(stream.current()) >= 0 ? "keyword" : "variableName"
+    if (stream.match(/^[().{}\->]/)) return "punctuation"
 
-  elp.start.then(on_start);
+    if (!stream.eol()) stream.next();
+    return null;
+  },
 
-  build_btn.onclick = _ev => {
-    query_btn.setAttribute('disabled', "true");
-    build_btn.setAttribute('disabled', "true");
-    elp.compile([{
-      name: "demo.elpi",
-      content: editor.getValue()
-    }], true).then(val => {
-      const values = val.filter(v => !v.startsWith('std.'));
-      console.log("info", "Preds", JSON.stringify(values, null, 4));
-      query_btn.removeAttribute('disabled');
-    }).catch(err => {
-      log("error", "demo", err);
-    }).finally(_ => build_btn.removeAttribute('disabled'));
-  }
-
-  query_btn.onclick = _ev => {
-    results_body.textContent = '';
-    elp.queryAll(query_text.value).then(val => {
-      console.log("info", "demo", JSON.stringify(val, null, 4));
-    }).catch(err => {
-      log("error", "demo", err);
-    });
-  };
-
-  restart_btn.onclick = _ev => {
-    build_btn.setAttribute('disabled', "true");
-    restart_btn.setAttribute('disabled', "true");
-    query_btn.setAttribute('disabled', "true");
-    elp.restart().then(on_start);
+  indent(state) {
+    return state.count
   }
 });
+
+let editor = new EditorView({
+  state: EditorState.create({
+    extensions: [basicSetup, language],
+    doc: example
+  }),
+  parent: container
+})
+
+
+// Automatically resize editor
+var doit;
+window.onresize = function () {
+  clearTimeout(doit);
+  doit = setTimeout(() => editor.requestMeasure(), 100);
+};
+
+// We start Elpi
+const elp = new Elpi(log, answer, "./share/elpi-js/elpi-worker.bc.js");
+
+const on_start = _val => {
+  log("info", "demo", "Elpi started");
+  build_btn.removeAttribute('disabled');
+  restart_btn.removeAttribute('disabled');
+};
+
+elp.start.then(on_start);
+
+build_btn.onclick = _ev => {
+  query_btn.setAttribute('disabled', "true");
+  build_btn.setAttribute('disabled', "true");
+  elp.compile([{
+    name: "demo.elpi",
+    content: editor.state.doc.toJSON().join('\n')
+  }], true).then(val => {
+    const values = val.filter(v => !v.startsWith('std.'));
+    console.log("info", "Preds", JSON.stringify(values, null, 4));
+    query_btn.removeAttribute('disabled');
+  }).catch(err => {
+    log("error", "demo", err);
+  }).finally(_ => build_btn.removeAttribute('disabled'));
+}
+
+query_btn.onclick = _ev => {
+  results_body.textContent = '';
+  elp.queryAll(query_text.value).then(val => {
+    console.log("info", "demo", JSON.stringify(val, null, 4));
+  }).catch(err => {
+    log("error", "demo", err);
+  });
+};
+
+restart_btn.onclick = _ev => {
+  build_btn.setAttribute('disabled', "true");
+  restart_btn.setAttribute('disabled', "true");
+  query_btn.setAttribute('disabled', "true");
+  elp.restart().then(on_start);
+}

@@ -3,20 +3,19 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hello Elpi</title>
-    <link rel="stylesheet" data-name="vs/editor/editor.main"
-        href="./node_modules/monaco-editor/min/vs/editor/editor.main.css" />
-    <link rel="stylesheet" data-name="css/bootstrap.min" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" data-name="css/bootstrap.min" href="./css/bootstrap.min.css" />
 
 </head>
 
 <body class="bg-light">
-    <h1 class="display-3 text-center m-5">Hello Elpi</h1>
     <div class="container">
+        <h1 class="display-3 text-center m-5">Hello Elpi</h1>
         <div class="row align-items-start">
             <div class="col-md-6">
                 <div id="editor" style="width: 100%; height: 300px; border: 1px
-                solid grey"></div>
+                solid grey; overflow-y: scroll;"></div>
                 <div class="p-2">
                     <button id="build" class="btn btn-primary" disabled>
                         Build & check
@@ -48,16 +47,8 @@
             </div>
         </div>
 
-        <script>
-            var require = {
-                paths: {
-                    vs: 'node_modules/monaco-editor/min/vs',
-                }
-            };
-        </script>
-        <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
-
-        <script src="demo.js" type="module"></script>
+        <script src="./demo.js" type="module"></script>
+    </div>
 </body>
 
 </html>
