@@ -1,5 +1,5 @@
 dist: release-build
-	dune install --prefix=dist
+	dune install --prefix=demo
 
 release-build:
 	dune build -p elpi-js

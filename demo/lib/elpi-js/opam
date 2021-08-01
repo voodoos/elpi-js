@@ -1,0 +1,21 @@
+opam-version: "1.2.2"
+name: "elpi-js"
+version: "0.1"
+maintainer: "Ulysse <thevoodoos@gmail.com>"
+author: "Ulysse <thevoodoos@gmail.com>"
+homepage: ""
+bug-reports: "https://github.com/voodoos/elpi-js/issues"
+license: "MIT"
+dev-repo: "https://github.com/voodoos/elpi-js"
+          
+build: [["dune" "build" "-p" name "-j" jobs]]
+
+
+depends: [
+  "dune" {>= "2.9.0" & < "3.0.0"}
+  "js_of_ocaml-compiler" {build & >= "3.0" & < "4.0"}
+  "js_of_ocaml-ppx" {build & >= "3.0" & < "4.0"}
+  "js_of_ocaml" {>= "3.0" & < "4.0"}
+  "elpi" {>= "1.13.7" & < "2.0.0"}
+  "base64" {>= "3.5.0" & < "4.0.0"}
+]
