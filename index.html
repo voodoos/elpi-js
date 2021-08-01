@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello Elpi</title>
+    
+
+  <script type="module" crossorigin src="/elpi-js/assets/index.ac8da227.js"></script>
+    <link rel="modulepreload" href="/elpi-js/assets/vendor.c9c62fb2.js">
+    <link rel="stylesheet" href="/elpi-js/assets/index.13dec2be.css">
+  </head>
+
+<body class="bg-light">
+    <div class="container">
+        <h1 class="display-3 text-center m-5">Hello Elpi</h1>
+        <div class="row align-items-start">
+            <div class="col-md-6">
+                <div id="editor" style="width: 100%; height: 300px; border: 1px
+                solid grey; overflow-y: scroll;"></div>
+                <div class="p-2">
+                    <button id="build" class="btn btn-primary" disabled>
+                        Build & check
+                    </button>
+                    <button id="restart" class="btn btn-warning" disabled>Restart Elpi</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="results" style="height: 300px; overflow-y: scroll;">
+                    <table class="table w-100">
+                        <thead>
+                            <tr>
+                                <th style="width: 2rem;" scope="col">#</th>
+                                <th class="w-25" scope="col">Variable</th>
+                                <th scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="input-group p-2">
+                    <input type="text" id="query_text" class="form-control"
+                        value="mappred age (ned::bob::sue::nil) L." />
+                    <button id="query" class="btn btn-primary" disabled>Query</button>
+                </div>
+                <div id="console"></div>
+            </div>
+        </div>
+
+        
+    </div>
+</body>
+
+</html>
