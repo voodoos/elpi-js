@@ -17,6 +17,6 @@
     "@codemirror/stream-parser": "^0.18.2"
   },
   "devDependencies": {
-    "vite": "^2.4.4"
+    "vite": "^2.9.13"
   }
 }
